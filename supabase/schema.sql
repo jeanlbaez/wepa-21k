@@ -8,7 +8,12 @@
 --   · 3 tablas (runners, reactions, meta) con forma id + data jsonb
 --   · realtime en las 3, para que el tablero se actualice solo
 --   · un bucket público "photos" para el álbum
---   · RLS abierto a cualquiera con sesión anónima (cualquiera con el enlace)
+--   · RLS abierto al rol `anon` (o sea: cualquiera con el enlace)
+--
+-- NO hace falta activar el login anónimo de Supabase. La app no abre sesión:
+-- usa la anon key sola, que corresponde al rol `anon`, y las policies de
+-- abajo le dan permiso a ese rol. La identidad por persona la guarda el
+-- propio teléfono en localStorage.
 --
 -- OJO con el modelo de seguridad: en GitHub Pages no hay invitados ni dueño,
 -- así que cualquiera que tenga el enlace puede escribir y borrar. Para un
@@ -60,6 +65,13 @@ create trigger t_meta_touch before update on public.meta
 alter publication supabase_realtime add table public.runners;
 alter publication supabase_realtime add table public.reactions;
 alter publication supabase_realtime add table public.meta;
+
+-- Sin esto, un DELETE viaja solo con la llave primaria y, con RLS activo,
+-- el evento se puede perder: alguien borra un corredor o quita un ¡Wepa! y
+-- a los demás no se les actualiza la pantalla hasta recargar.
+alter table public.runners   replica identity full;
+alter table public.reactions replica identity full;
+alter table public.meta      replica identity full;
 
 -- Si alguna de las tres líneas de arriba da error porque ya estaba añadida,
 -- no pasa nada: seguí con el resto.
