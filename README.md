@@ -87,11 +87,25 @@ Y abre `http://localhost:8080`.
 
 ## Estado
 
-- La guía de carrera: probada, funcionando.
-- El adaptador de Supabase: **escrito pero sin probar contra un proyecto real**
-  todavía, porque hace falta la URL y la anon key. Hay que correrlo una vez de
-  punta a punta (añadir un corredor, un ¡Wepa! y una foto desde dos teléfonos
-  distintos) antes de confiarle el día de la carrera.
+**La guía de carrera** — probada en pantalla de teléfono, sin errores de JS.
+Cuenta regresiva, horario, oasis, waves y checklist funcionando.
+
+**El adaptador de Supabase** — probado hasta donde se puede sin un proyecto
+real. Con una config falsa:
+
+- el shim se instala y la app lo acepta como backend
+  (`user.can('data.write')` → el tablero se vuelve escribible)
+- se abren los 3 canales de realtime y las 3 llamadas REST esperadas
+- no hay excepciones de JS ni promesas rechazadas sin manejar
+- cuando la red falla, la app cae en su estado de «sin conexión» sin romperse
+
+Lo que **falta probar** y hay que hacer antes de confiarle nada importante:
+una pasada de punta a punta contra un proyecto de verdad — añadir un corredor,
+darle un ¡Wepa! y subir una foto **desde dos teléfonos distintos**, para ver
+que el realtime llega a los dos lados y que la foto se engancha al corredor.
+
+Ese último punto es el que más importa: el bug de los ids con extensión ya
+hizo exactamente eso una vez (foto subida, foto perdida, cero error visible).
 
 ## Créditos
 
