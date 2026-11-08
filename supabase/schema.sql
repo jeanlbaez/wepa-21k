@@ -85,6 +85,22 @@ alter table public.runners   replica identity full;
 alter table public.reactions replica identity full;
 alter table public.meta      replica identity full;
 
+-- --- permisos de tabla para la Data API -----------------------------------
+-- Esto es aparte del RLS y hace falta igual.
+--
+-- Al crear el proyecto, Supabase ofrece "Automatically expose new tables" y
+-- recomienda DESACTIVARLO. Si está desactivado, una tabla creada después
+-- (como estas tres) no queda accesible para los roles de la Data API, y
+-- PostgREST contesta "permission denied" aunque el RLS esté bien puesto.
+--
+-- Damos los permisos a mano para que el script funcione con el toggle en
+-- cualquier posición. El RLS de abajo sigue siendo quien decide qué filas
+-- puede ver o tocar cada quien; esto solo abre la puerta de la tabla.
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete
+  on public.runners, public.reactions, public.meta
+  to anon, authenticated;
+
 -- --- RLS -------------------------------------------------------------------
 alter table public.runners   enable row level security;
 alter table public.reactions enable row level security;
