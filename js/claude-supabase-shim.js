@@ -296,22 +296,59 @@
     canEdit: function () { return Promise.resolve(true); }
   };
 
-  /* ---- downloads --------------------------------------------------------- */
+  /* ---- downloads ---------------------------------------------------------
+   * Dos caminos, en este orden:
+   *
+   * 1. La hoja de compartir del sistema (navigator.share con archivos).
+   *    Es LO QUE QUEREMOS en el teléfono: en iOS da «Guardar imagen», que
+   *    manda la tarjeta al carrete de Fotos. El atributo `download` de un
+   *    enlace, en cambio, en iOS guarda en Archivos o no hace nada visible,
+   *    y la app se queda creyendo que guardó.
+   *
+   * 2. Enlace con `download`, que es lo normal en computadora.
+   *
+   * Si los dos fallan, lanzamos el error y index.html abre la foto en un
+   * diálogo para guardarla a mano (dejar presionada la imagen).            */
+  function anchorSave(o) {
+    var a = document.createElement('a');
+    var u = URL.createObjectURL(o.data);
+    a.href = u;
+    a.download = o.filename || 'wepa21k';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(u); }, 10000);
+    return { status: 'saved' };
+  }
+
   var downloads = {
     save: function (o) {
-      try {
-        var a = document.createElement('a');
-        var u = URL.createObjectURL(o.data);
-        a.href = u;
-        a.download = o.filename || 'wepa21k';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(function () { URL.revokeObjectURL(u); }, 10000);
-        return Promise.resolve({ status: 'saved' });
-      } catch (e) {
-        return Promise.reject(err('declined', String(e)));
+      var name = o.filename || 'wepa21k';
+      var blob = o.data;
+      var isImg = /^image\//.test(blob.type || '');
+
+      // Solo imágenes: compartir un CSV por la hoja del sistema no aporta.
+      if (isImg && navigator.canShare && navigator.share) {
+        var file;
+        try { file = new File([blob], name, { type: blob.type }); } catch (e) { file = null; }
+        if (file && navigator.canShare({ files: [file] })) {
+          return navigator.share({ files: [file] }).then(
+            function () { return { status: 'saved' }; },
+            function (e) {
+              // El usuario cerró la hoja: no es un fallo, no insistimos
+              // abriendo una descarga que no pidió.
+              if (e && (e.name === 'AbortError' || e.code === 20)) throw err('declined', 'share cancelado');
+              // Cualquier otra cosa (incluido NotAllowedError si el
+              // navegador exigió un gesto más directo): al plan B.
+              try { return anchorSave(o); } catch (e2) { throw err('unavailable', String(e2)); }
+            }
+          );
+        }
       }
+
+      try { return Promise.resolve(anchorSave(o)); }
+      catch (e) { return Promise.reject(err('unavailable', String(e))); }
     }
   };
 

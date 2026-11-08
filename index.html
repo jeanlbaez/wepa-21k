@@ -862,8 +862,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="js/config.js?v=202611072335"></script>
-<script src="js/claude-supabase-shim.js?v=202611072335"></script>
+<script src="js/config.js?v=202611080145"></script>
+<script src="js/claude-supabase-shim.js?v=202611080145"></script>
 <script>
 (() => {
 'use strict';
@@ -1815,15 +1815,37 @@ function ensureFonts() {
   return fontsReady;
 }
 const imgCache = new Map();
-function loadImg(src) {
-  if (imgCache.has(src)) return imgCache.get(src);
-  const p = new Promise((res, rej) => {
+/* Las fotos que van de fondo en la tarjeta hay que pedirlas en modo CORS.
+ *
+ * Dentro de Claude viven en '/_blob/<id>', o sea el mismo origen, y no hay
+ * nada que hacer. Publicada en Pages, la foto viene del bucket (otro
+ * origen): si se pide sin crossOrigin, dibujarla CONTAMINA el canvas y
+ * toBlob() lanza SecurityError. El resultado es confuso, porque la vista
+ * previa se ve perfecta y solo falla al guardar.
+ *
+ * Con crossOrigin='anonymous' el canvas queda limpio y la tarjeta se puede
+ * exportar. Si el servidor de la foto no manda los headers de CORS, se
+ * reintenta sin él: al menos la vista previa sigue saliendo (guardar avisará
+ * de que pruebe «Sin foto»). El atributo va antes de src, siempre. */
+function sameOrigin(src) {
+  try { return new URL(src, location.href).origin === location.origin; }
+  catch (e) { return true; }
+}
+function rawImg(src, cors) {
+  return new Promise((res, rej) => {
     const im = new Image();
     im.decoding = 'async';
+    if (cors) im.crossOrigin = 'anonymous';
     im.onload = () => res(im);
     im.onerror = () => rej(new Error('img'));
     im.src = src;
   });
+}
+function loadImg(src) {
+  if (imgCache.has(src)) return imgCache.get(src);
+  const p = sameOrigin(src)
+    ? rawImg(src, false)
+    : rawImg(src, true).catch(() => rawImg(src, false));
   imgCache.set(src, p);
   p.catch(() => imgCache.delete(src));
   return p;

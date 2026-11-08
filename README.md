@@ -107,6 +107,21 @@ que el realtime llega a los dos lados y que la foto se engancha al corredor.
 Ese último punto es el que más importa: el bug de los ids con extensión ya
 hizo exactamente eso una vez (foto subida, foto perdida, cero error visible).
 
+### Dos trampas de publicar fuera de Claude
+
+Las dos daban el mismo síntoma — «le doy a guardar y no pasa nada» — y
+ninguna salía en la consola:
+
+1. **Canvas contaminado.** Las fotos del bucket vienen de otro origen. Sin
+   `crossOrigin='anonymous'`, dibujarlas en la tarjeta contamina el canvas y
+   `toBlob()` lanza `SecurityError`. La vista previa se ve perfecta; solo
+   falla al exportar. Dentro de Claude no pasaba, porque las fotos eran del
+   mismo origen (`/_blob/...`).
+2. **`<a download>` en el teléfono.** En iOS guarda en Archivos, o no hace
+   nada visible, y la app igual canta «Guardado». Por eso el adaptador
+   intenta primero la hoja de compartir del sistema
+   (`navigator.share` con archivos), que es la que ofrece «Guardar imagen».
+
 ## Créditos
 
 Datos de ruta, horario y oasis tomados de la guía oficial del corredor del
