@@ -284,7 +284,9 @@ img.ph.broken{visibility:hidden}
 
 /* bottom tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
-.tabs .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.tabs .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.tabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:420px){.tabs button{font-size:10px;padding-inline:0}.tabs svg{width:22px;height:22px}}
 .tabs button{position:relative;background:none;border:0;padding:9px 2px 10px;display:grid;justify-items:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer}
 .tabs button[aria-current="page"]{color:var(--flame)}
 .tabs button[aria-current="page"]::before{content:"";position:absolute;top:-1px;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--flame)}
@@ -334,6 +336,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 .spin{display:inline-block;width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--flame);animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .err{color:var(--flame);font-weight:700;font-size:14px}
+
+/* mi corredor */
+.mecard{margin-bottom:22px}
+.mecard + .mecard{padding-top:22px;border-top:1px solid var(--line)}
+.mecard .foot-actions{margin-top:16px}
+.mecard .rphotos{margin-top:8px}
 
 /* runner detail */
 .bibcard{position:relative;background:var(--bib);color:var(--bib-ink);border-radius:12px;padding:20px 22px 18px;border:1px solid var(--line);text-align:center;overflow:hidden}
@@ -652,6 +660,21 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 </section>
 
 <!-- ============ GRUPO ============ -->
+<!-- ============ CORREDOR ============ -->
+<section class="view" id="v-corredor" data-tab="corredor" aria-label="Corredor" hidden>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h2>Mi corredor</h2>
+        <p class="lede">Tu foto, tu nombre y tus stats en un solo sitio. Lo que pongas aqu&iacute; sale en el tab del grupo.</p>
+      </div>
+    </div>
+    <div id="meBody">
+      <div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando&hellip;</p></div>
+    </div>
+  </div>
+</section>
+
 <section class="view" id="v-grupo" data-tab="grupo" aria-label="Grupo" hidden>
   <div class="wrap">
     <div class="head-row">
@@ -738,6 +761,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 <nav class="tabs" aria-label="Secciones">
   <div class="in">
     <button type="button" data-tab="carrera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span>Carrera</span></button>
+    <button type="button" data-tab="corredor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Corredor</span></button>
     <button type="button" data-tab="grupo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M9 21V9h6v12"/><path d="M3 21v-7h6"/><path d="M15 21v-5h6v5"/></svg><span>Grupo</span></button>
     <button type="button" data-tab="pronosticos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M10 2h4"/></svg><span>Pronósticos</span></button>
     <button type="button" data-tab="album"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg><span>Álbum</span></button>
@@ -838,8 +862,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="js/config.js?v=202611072322"></script>
-<script src="js/claude-supabase-shim.js?v=202611072322"></script>
+<script src="js/config.js?v=202611072335"></script>
+<script src="js/claude-supabase-shim.js?v=202611072335"></script>
 <script>
 (() => {
 'use strict';
@@ -848,7 +872,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-o
 const START = Date.parse('2026-11-08T04:00:00-04:00');
 const LIMIT = START + 4 * 3600e3;
 const KM = 21.0975, MI = 13.1094;
-const TABS = ['carrera', 'grupo', 'pronosticos', 'album'];
+const TABS = ['carrera', 'corredor', 'grupo', 'pronosticos', 'album'];
 const FD = '"Big Shoulders Display", "Arial Narrow", Impact, sans-serif';
 const FM = '"Martian Mono", ui-monospace, Menlo, monospace';
 const FB = '"Atkinson Hyperlegible", system-ui, sans-serif';
@@ -1229,6 +1253,7 @@ function renderData() {
   S.C = computeAll();
   renderSync();
   renderHeader();
+  renderMe();
   renderGrupo();
   renderOracle();
   renderAlbum();
@@ -1255,6 +1280,69 @@ function rowHTML(r, C, fin) {
     `<span class="who"><span class="nm">${esc(r.name)}${r.owner && r.owner === S.me.key ? '<em class="you">tú</em>' : ''}</span><span class="bd">${bd}${extra}</span></span>` +
     `<span class="tm"><b class="${fin ? '' : 'dim'}">${main}</b><small>${sub}</small></span></button>` +
     `<button type="button" class="wepa${on ? ' on' : ''}" data-wepa="${esc(r.id)}" aria-pressed="${on}"${can ? '' : ' disabled'} aria-label="¡Wepa! para ${esc(r.name)}, ${w}"><b>${w}</b><span>¡Wepa!</span></button></li>`;
+}
+function meCardHTML(r, C, can) {
+  const fin = r.time > 0;
+  const cells = [];
+  if (fin) {
+    cells.push(['Tiempo oficial', fmtT(r.time)]);
+    cells.push(['Ritmo', fmtPace(r.time) + ' /km']);
+  }
+  if (r.goal > 0) cells.push(['Pron\u00f3stico', fmtT(r.goal) + (fin ? ' (' + fmtDiff(r.time - r.goal) + ')' : '')]);
+  if (r.half > 0) cells.push(['Primera mitad', fmtT(r.half)]);
+  if (r.hr) cells.push(['FC promedio', r.hr + ' lpm']);
+  if (r.cadence) cells.push(['Cadencia', r.cadence + ' ppm']);
+  if (r.place) cells.push(['Posici\u00f3n general', '#' + r.place]);
+  if (fin && C.rank[r.id] && C.fin.length > 1) cells.push(['En el grupo', C.rank[r.id] + '.\u00ba de ' + C.fin.length]);
+  const w = C.wep[r.id] || 0;
+  if (w) cells.push(['\u00a1Wepa! recibidos', String(w)]);
+  const badges = C.badges[r.id] || [];
+  const feel = FEEL.find((f) => f[0] === r.feel);
+  return '<article class="mecard">' +
+    '<div class="bibcard"><span class="band"></span><i class="pin a"></i><i class="pin b"></i><i class="pin c"></i><i class="pin d"></i>' +
+    '<div class="bib-top"><span>21.1 km \u00b7 San Juan</span><span>' + (r.wave ? esc(WAVES[r.wave]) : '8 nov 2026') + '</span></div>' +
+    '<div class="bib-num">' + esc(r.bib || '21K') + '</div><div class="bib-name">' + esc(r.name) + '</div></div>' +
+    (r.note ? '<p class="quote">\u00ab' + esc(r.note) + '\u00bb</p>' : '') +
+    (cells.length
+      ? '<div class="sgrid">' + cells.map(([l, v]) => '<div><span>' + l + '</span><b>' + esc(v) + '</b></div>').join('') + '</div>'
+      : '<p class="fine" style="margin-top:14px">Todav\u00eda no has puesto resultados. Despu\u00e9s de la meta, toca Editar.</p>') +
+    (feel ? '<p class="feelline">Sensaci\u00f3n: ' + feel[1] + ' ' + feel[2] + '</p>' : '') +
+    (badges.length ? '<div class="blist">' + badges.map((b) => '<span class="bchip">' + b[0] + ' ' + esc(b[1]) + '</span>').join('') + '</div>' : '') +
+    '<h3 class="subh">Mis fotos</h3>' +
+    (r.photos.length
+      ? '<div class="rphotos">' + r.photos.map((id) => '<button type="button" class="ph-cell" data-photo="' + esc(id) + '" data-rid="' + esc(r.id) + '"><img class="ph" src="' + blobUrl(id) + '" alt="Mi foto" loading="lazy"></button>').join('') + '</div>'
+      : '<p class="fine">Todav\u00eda no has subido fotos.</p>') +
+    (can
+      ? '<div class="foot-actions">' +
+        '<button type="button" class="btn primary" data-act="me-edit" data-rid="' + esc(r.id) + '">Editar mis stats</button>' +
+        '<button type="button" class="btn" data-act="me-photos" data-rid="' + esc(r.id) + '">+ Subir fotos</button>' +
+        '</div>'
+      : '') +
+    '</article>';
+}
+function renderMe() {
+  const el = $('#meBody');
+  if (!el) return;
+  const C = S.C, can = canWriteUI(), mine = myRunners();
+  if (!S.db || S.conn === 'off') {
+    el.innerHTML = '<div class="empty"><b>Sin conexi\u00f3n</b><p>No se pueden cargar tus datos ahora mismo. Revisa tu conexi\u00f3n y recarga.</p></div>';
+    return;
+  }
+  if (!S.runners.length && S.conn === 'loading') {
+    el.innerHTML = '<div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando\u2026</p></div>';
+    return;
+  }
+  if (!mine.length) {
+    el.innerHTML = '<div class="empty"><b>Todav\u00eda no te has a\u00f1adido</b>' +
+      '<p>Pon tu nombre, tu n\u00famero de BIB y tu pron\u00f3stico. Despu\u00e9s de la meta a\u00f1ades tu tiempo y tus fotos.</p>' +
+      (can ? '<button type="button" class="btn primary" data-act="add">+ A\u00f1adir mis stats</button>' : '<p class="fine">' + readOnlyMsg() + '</p>') +
+      '</div>';
+    return;
+  }
+  el.innerHTML = mine.map((r) => meCardHTML(r, C, can)).join('') +
+    (can && mine.length < 4
+      ? '<div class="foot-actions"><button type="button" class="btn ghost" data-act="add">+ A\u00f1adir otro corredor</button></div>'
+      : '');
 }
 function renderGrupo() {
   const C = S.C, can = canWriteUI(), mine = myRunners();
@@ -2005,6 +2093,8 @@ document.addEventListener('click', (e) => {
     switch (d.act) {
       case 'add': openForm(null); break;
       case 'edit-mine': if (m.length === 1) openForm(m[0].id); break;
+      case 'me-edit': openForm(d.rid || null); break;
+      case 'me-photos': openForm(d.rid || null); if (S.form && S.assets) $('#fFile').click(); break;
       case 'add-goal': openForm(m.length === 1 ? m[0].id : null, { focus: '#fGoal' }); break;
       case 'add-photo': if (!canWriteUI()) { toast(readOnlyMsg()); break; } renderPick(); dlgPick.showModal(); break;
       case 'csv': exportCSV(); break;
