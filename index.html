@@ -1,0 +1,2066 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Wepa 21K</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@700;800;900&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: app shell. Sticky "madrugada" header and race-clock hero, tabbed views in a 680px column,
+   fixed bottom tab bar. Runners are bib-paper cards; the oasis live on a transit-style strip map. */
+:root{
+  --ground:#EDF1F4;
+  --surface:#FFFFFF;
+  --surface-2:#F4F7F9;
+  --ink:#132130;
+  --muted:#566574;
+  --line:#D4DCE2;
+  --band:#12202F;
+  --band-2:#1B2C40;
+  --band-line:#2A3D54;
+  --on-band:#F2F6F9;
+  --on-band-muted:#A9B8C6;
+  --band-accent:#FF7A5C;
+  --flame:#C63A22;
+  --on-flame:#FFFFFF;
+  --flame-soft:#FBE4DE;
+  --agua:#0B7A92;
+  --on-agua:#FFFFFF;
+  --agua-soft:#DCEFF4;
+  --gold:#8E6605;
+  --gold-soft:#F6EBCC;
+  --good:#1E7A4C;
+  --bib:#FFFFFF;
+  --bib-ink:#121B25;
+  --bib-muted:#5E6B77;
+  --pin:#DCE3E8;
+  --on-photo:#FFFFFF;
+  --scrim:rgba(8,14,22,.55);
+  --shadow:0 1px 2px rgba(16,28,40,.06),0 8px 24px rgba(16,28,40,.08);
+  --font-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-data:"Martian Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A121E; --surface:#111C2A; --surface-2:#172436; --ink:#E6ECF1; --muted:#9AAAB9; --line:#233347;
+    --band:#0D1726; --band-2:#16253A; --band-line:#24364D; --on-band:#F2F6F9; --on-band-muted:#A9B8C6; --band-accent:#FF7A5C;
+    --flame:#FF6B4F; --on-flame:#1B0A06; --flame-soft:#3B1C17;
+    --agua:#4CC9E0; --on-agua:#05232B; --agua-soft:#103039;
+    --gold:#E8B84A; --gold-soft:#3A2F12; --good:#5AD59A;
+    --bib:#EEF1F3; --bib-ink:#121B25; --bib-muted:#56636F; --pin:#0A121E;
+    --on-photo:#FFFFFF; --scrim:rgba(2,6,12,.72); --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A121E; --surface:#111C2A; --surface-2:#172436; --ink:#E6ECF1; --muted:#9AAAB9; --line:#233347;
+  --band:#0D1726; --band-2:#16253A; --band-line:#24364D; --on-band:#F2F6F9; --on-band-muted:#A9B8C6; --band-accent:#FF7A5C;
+  --flame:#FF6B4F; --on-flame:#1B0A06; --flame-soft:#3B1C17;
+  --agua:#4CC9E0; --on-agua:#05232B; --agua-soft:#103039;
+  --gold:#E8B84A; --gold-soft:#3A2F12; --good:#5AD59A;
+  --bib:#EEF1F3; --bib-ink:#121B25; --bib-muted:#56636F; --pin:#0A121E;
+  --on-photo:#FFFFFF; --scrim:rgba(2,6,12,.72); --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+body:has(dialog[open]){overflow:hidden}
+a{color:var(--agua);text-underline-offset:2px;font-weight:700}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--flame);outline-offset:2px}
+p{margin:0}
+h2,h3{text-wrap:balance}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--band);color:var(--on-band)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.mark{font-family:var(--font-display);font-weight:900;font-size:30px;line-height:1;letter-spacing:.02em}
+.mark em{font-style:normal;color:var(--band-accent)}
+.crew{background:none;border:0;padding:3px 0 0;color:var(--on-band-muted);font-size:13px;text-align:left;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(56vw,360px)}
+.crew:disabled{cursor:default}
+.chip-status{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-data);font-size:11.5px;padding:7px 11px;border-radius:999px;background:var(--band-2);color:var(--on-band);white-space:nowrap;font-variant-numeric:tabular-nums}
+.chip-status .pulse{width:8px;height:8px;border-radius:50%;background:var(--band-accent)}
+.chip-status.live .pulse{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+/* hero */
+.hero{background:var(--band);color:var(--on-band)}
+.hero .wrap{padding-block:8px 24px}
+.eyebrow{font-family:var(--font-data);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--band-accent);margin-bottom:12px}
+.clock-label{font-size:14px;color:var(--on-band-muted)}
+.clock{font-family:var(--font-display);font-weight:900;font-size:clamp(64px,22vw,128px);line-height:.92;margin:2px 0 16px;white-space:nowrap}
+.clock span{display:inline-block;width:.54em;text-align:center}
+.clock i{font-style:normal;display:inline-block;width:.26em;text-align:center;color:var(--band-accent)}
+.clock small{font-size:.3em;margin-left:.12em;color:var(--on-band-muted);font-weight:800}
+.facts{list-style:none;margin:0;padding:12px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;border-top:1px solid var(--band-line)}
+.facts b{display:block;font-family:var(--font-display);font-weight:800;font-size:21px;line-height:1.1}
+.facts span{font-size:12.5px;color:var(--on-band-muted)}
+.jumps{display:flex;gap:8px;overflow-x:auto;padding:14px 0 2px;scrollbar-width:none}
+.jumps::-webkit-scrollbar{display:none}
+.jumps button{flex:none;border:1px solid var(--band-line);background:transparent;color:var(--on-band);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* sections */
+main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+.sec{padding-block:26px 4px;scroll-margin-top:72px}
+.sec h2,.head-row h2{font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1.02;text-transform:uppercase;letter-spacing:.01em;margin:0 0 6px}
+.lede{color:var(--muted);margin-bottom:14px;max-width:62ch}
+.subh{font-family:var(--font-data);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;padding-top:26px;margin-bottom:14px}
+.head-row > div{min-width:0;flex:1 1 260px}
+.head-row .lede{margin-bottom:0}
+.head-btns{display:flex;gap:8px;flex-wrap:wrap}
+.fine{font-size:13.5px;color:var(--muted)}
+.stack,.tips{display:grid;gap:10px}
+@media (min-width:640px){.tips{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tipcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.tipcard h3{font-family:var(--font-display);font-weight:800;font-size:22px;line-height:1.05;text-transform:uppercase;margin:0}
+.tipcard .src{font-size:12.5px;color:var(--muted)}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.ticks li{position:relative;padding-left:18px;line-height:1.45}
+.ticks li::before{content:"";position:absolute;left:0;top:.66em;width:9px;height:3px;border-radius:2px;background:var(--flame)}
+.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.chips li{font-size:13.5px;padding:5px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.kv{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.kv span{font-family:var(--font-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.code{font-family:var(--font-data);font-weight:600;background:var(--surface-2);border:1px dashed var(--line);border-radius:6px;padding:1px 6px}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.tl li{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:12px;padding:12px 16px;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:0}
+.tl time{font-family:var(--font-data);font-size:12.5px;font-weight:600;padding-top:3px;font-variant-numeric:tabular-nums}
+.tl li.past{color:var(--muted)}
+.tl li.past b{font-weight:400}
+.tl li.next{background:var(--flame-soft)}
+.tl li.next time{color:var(--flame)}
+
+/* oasis strip map */
+.nextbox{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:10px 14px;align-items:end;background:var(--agua-soft);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.nextbox .lbl{display:block;font-family:var(--font-data);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--agua);font-weight:600}
+.nextbox b{display:block;line-height:1.25}
+@media (max-width:440px){.nextbox{grid-template-columns:repeat(2,minmax(0,1fr))}.nextbox .btn{grid-column:1/-1}}
+.route{list-style:none;margin:0;padding:8px 0;position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.route::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:4px;border-radius:2px;background:var(--agua);opacity:.35}
+.route li{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:6px 12px}
+.route .node{justify-self:center;z-index:1}
+.route .seg{padding-block:2px}
+.route .seg .node{width:12px;height:12px;border-radius:50%;background:var(--surface);border:3px solid var(--agua)}
+.route .seg > div{color:var(--muted);font-size:14px;line-height:1.4}
+.route .oasis .node,.route .start .node{width:34px;height:34px;border-radius:50%;background:var(--agua);color:var(--on-agua);display:grid;place-items:center;font-family:var(--font-display);font-weight:900;font-size:19px}
+.route .start .node{border-radius:9px;background:var(--ink);color:var(--surface)}
+.route .oasis.done .node{background:var(--surface);color:var(--agua);box-shadow:inset 0 0 0 3px var(--agua)}
+.route .oasis.done .o-name{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.o-name{font-weight:700}
+.o-sub{color:var(--muted)}
+.o-meta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;margin-top:3px}
+.tag{display:inline-block;font-family:var(--font-data);font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.tag.wc{background:var(--agua-soft);color:var(--agua);border-color:transparent}
+.tag.med{background:var(--flame-soft);color:var(--flame);border-color:transparent}
+.o-check{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:var(--line);cursor:pointer;display:grid;place-items:center;padding:0}
+.o-check[aria-pressed="true"]{background:var(--agua);border-color:var(--agua);color:var(--on-agua)}
+.o-check svg{width:20px;height:20px}
+
+/* entrances table */
+.seg-ctl{display:flex;flex-wrap:wrap;gap:6px}
+.seg-ctl button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;font-weight:700;cursor:pointer;min-height:40px;min-width:44px}
+.seg-ctl button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.wave-hint{font-weight:700}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.entr{width:100%;border-collapse:collapse;font-size:14px}
+.entr th,.entr td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.entr thead th{border-top:0;font-family:var(--font-data);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.entr tbody th{font-family:var(--font-display);font-weight:900;font-size:20px;white-space:nowrap;line-height:1.1}
+.entr tr.hl td,.entr tr.hl th{background:var(--flame-soft)}
+
+/* checklist */
+.progress{height:6px;background:var(--surface);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.progress i{display:block;height:100%;width:0;background:var(--agua);transition:width .25s}
+.checklist{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.checklist li{border-top:1px solid var(--line)}
+.checklist li:first-child{border-top:0}
+.checklist label{display:flex;gap:12px;align-items:center;padding:12px 14px;cursor:pointer}
+.checklist input{width:22px;height:22px;accent-color:var(--agua);flex:none;margin:0}
+.checklist input:checked + span{color:var(--muted);text-decoration:line-through}
+
+/* group */
+.note{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14.5px;margin-bottom:12px}
+.sync{display:flex;align-items:center;gap:8px;font-family:var(--font-data);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:-4px 0 14px}
+.sync::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.sync.ok{color:var(--good)}
+.sync.ok::before{background:var(--good)}
+.sync.wait::before{background:var(--gold);animation:pulse 1s ease-in-out infinite}
+.sync.off{color:var(--flame)}
+.sync.off::before{background:var(--flame)}
+.note.tip{background:var(--agua-soft);border-color:transparent;display:grid;gap:10px}
+.note.tip .btn{justify-self:start}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:560px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.tile b{display:block;font-family:var(--font-display);font-weight:900;font-size:32px;line-height:1;font-variant-numeric:tabular-nums}
+.tile span{font-family:var(--font-data);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:20px 0 4px;border-bottom:2px solid var(--line)}
+.pod{flex:1 1 0;min-width:0;max-width:200px;display:grid;justify-items:center;gap:5px;background:none;border:0;padding:0;cursor:pointer;color:inherit}
+.pod .pn{font-weight:700;font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px}
+.pod .pt{font-family:var(--font-data);font-size:12.5px;font-variant-numeric:tabular-nums}
+.pod .step{width:100%;border-radius:10px 10px 0 0;background:var(--surface);border:1px solid var(--line);border-bottom:0;display:grid;place-items:center;font-family:var(--font-display);font-weight:900;font-size:34px;color:var(--muted)}
+.pod.p1{order:2}.pod.p2{order:1}.pod.p3{order:3}
+.pod.p1 .step{height:92px;background:var(--gold-soft);color:var(--gold)}
+.pod.p2 .step{height:68px}.pod.p3 .step{height:52px}
+.av{position:relative;width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--muted);flex:none}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.av.big{width:58px;height:58px;font-size:22px}
+.pod.p1 .av.big{width:72px;height:72px;box-shadow:0 0 0 3px var(--gold)}
+.lb{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lrow{display:flex;align-items:stretch;border-top:1px solid var(--line)}
+.lrow:first-child{border-top:0}
+.lmain{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:1.8rem 40px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;background:none;border:0;text-align:left;cursor:pointer;color:inherit}
+.lmain.nork{grid-template-columns:40px minmax(0,1fr) auto}
+.lmain:hover{background:var(--surface-2)}
+.rk{font-family:var(--font-display);font-weight:900;font-size:24px;text-align:center;color:var(--muted)}
+.who{display:grid;min-width:0;gap:1px}
+.nm{font-weight:700;overflow-wrap:anywhere;line-height:1.25}
+.bd{font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center}
+.bibn{font-family:var(--font-data);font-size:10.5px;letter-spacing:.04em}
+.you{font-style:normal;font-family:var(--font-data);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--flame-soft);color:var(--flame);padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:2px}
+.tm{display:grid;justify-items:end;font-variant-numeric:tabular-nums;text-align:right}
+.tm b{font-family:var(--font-data);font-weight:600;font-size:14.5px}
+.tm b.dim{color:var(--muted)}
+.tm small{color:var(--muted);font-size:12px}
+.wepa{flex:none;width:66px;border:0;border-left:1px solid var(--line);background:none;display:grid;place-items:center;align-content:center;font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:6px 2px}
+.wepa b{font-family:var(--font-display);font-weight:900;font-size:22px;line-height:1;color:var(--ink)}
+.wepa.on{color:var(--flame);background:var(--flame-soft)}
+.wepa.on b{color:var(--flame)}
+.wepa:disabled{cursor:default}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:22px 18px;display:grid;gap:8px;justify-items:start}
+.empty b{font-family:var(--font-display);font-weight:800;font-size:22px;text-transform:uppercase;line-height:1.1}
+.empty p{color:var(--muted);max-width:56ch}
+.legend{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:0 16px}
+.legend summary{cursor:pointer;padding:14px 0;font-weight:700}
+.legend ul{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.legend li{display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:8px}
+.foot-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+
+/* oracle */
+.olist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.obtn{display:grid;gap:6px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;color:inherit}
+.orow.win .obtn{background:var(--gold-soft);border-color:transparent}
+.o-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.o-res{font-size:13px;color:var(--muted);white-space:nowrap}
+.o-res b{font-family:var(--font-data);font-size:14.5px;color:var(--ink)}
+.o-nums{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--muted)}
+.o-nums b{font-family:var(--font-data);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.dbar{position:relative;display:block;height:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:5px}
+.orow.win .dbar{background:var(--surface)}
+.dbar .mid{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--muted)}
+.dbar .bar{position:absolute;top:0;bottom:0;border-radius:4px}
+.dbar .fast{background:var(--good)}
+.dbar .slow{background:var(--flame)}
+
+/* album */
+.album{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+@media (min-width:560px){.album{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.album.is-empty{display:block}
+.ph-cell{position:relative;aspect-ratio:1;max-width:100%;width:100%;border:0;padding:0;border-radius:10px;overflow:hidden;background:var(--surface-2);cursor:pointer;display:block}
+.ph-cell::before{content:"Foto no disponible";position:absolute;inset:0;display:grid;place-items:center;font-size:11px;color:var(--muted);padding:6px;text-align:center}
+.ph-cell img{position:relative;width:100%;height:100%;object-fit:cover;display:block}
+.ph-cell .cap{position:absolute;left:6px;right:6px;bottom:6px;font-size:12px;font-weight:700;color:var(--on-photo);text-shadow:0 1px 3px rgba(0,0,0,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+img.ph.broken{visibility:hidden}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.small{min-height:36px;padding:0 12px;font-size:14px}
+.btn.primary{background:var(--flame);border-color:var(--flame);color:var(--on-flame)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--flame)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.wepa-btn.on{background:var(--flame-soft);border-color:var(--flame);color:var(--flame)}
+.btn b{font-family:var(--font-display);font-weight:900;font-size:19px;line-height:1}
+
+/* bottom tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.tabs .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.tabs button{position:relative;background:none;border:0;padding:9px 2px 10px;display:grid;justify-items:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer}
+.tabs button[aria-current="page"]{color:var(--flame)}
+.tabs button[aria-current="page"]::before{content:"";position:absolute;top:-1px;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--flame)}
+.tabs svg{width:24px;height:24px}
+
+/* dialogs */
+dialog.sheet{padding:0;border:0;margin:auto auto 0;width:100%;max-width:640px;max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px);border-radius:20px 20px 0 0;background:var(--surface);color:var(--ink);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+dialog.sheet:not([open]){display:none}
+dialog::backdrop{background:var(--scrim)}
+@media (min-width:700px){dialog.sheet{margin:auto;border-radius:20px;max-height:calc(100dvh - 64px)}}
+dialog.sheet.small{max-width:460px}
+.sheet > form{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 12px 12px 18px;border-bottom:1px solid var(--line);flex:none}
+.sheet-h h3,.sheet-h b{margin:0;font-family:var(--font-display);font-weight:800;font-size:22px;text-transform:uppercase;line-height:1.1;min-width:0;overflow-wrap:anywhere}
+.sheet-b{overflow:auto;padding:16px 18px;flex:1 1 auto;min-height:0;overscroll-behavior:contain}
+.sheet-f{flex:none;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
+.x{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-2);font-size:22px;line-height:1;cursor:pointer;flex:none}
+.confirm{flex:1 1 100%;font-weight:700}
+
+/* form */
+fieldset{border:0;margin:0 0 22px;padding:0;display:grid;gap:14px;min-width:0}
+legend{font-family:var(--font-display);font-weight:800;font-size:21px;text-transform:uppercase;padding:0;margin-bottom:12px}
+legend small{font-family:var(--font-body);font-weight:400;font-size:13px;text-transform:none;color:var(--muted);margin-left:6px}
+.field{display:grid;gap:6px;min-width:0;align-content:start}
+.del-zone{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.field label,.lbl-like{font-size:14px;font-weight:700}
+input:not([type=checkbox]):not([type=file]),select,textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);min-height:46px}
+textarea{resize:vertical;min-height:72px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--flame);outline-offset:1px}
+.tin{font-family:var(--font-data);letter-spacing:.02em}
+.hint{font-size:12.5px;color:var(--muted)}
+.hint.ok{color:var(--good)}
+.hint.bad{color:var(--flame)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
+.check input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--flame);flex:none}
+.feel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.feel button{display:grid;justify-items:center;gap:2px;padding:8px 2px;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer;font-size:11px;color:var(--muted);min-width:0}
+.feel button span{font-size:22px;line-height:1.2}
+.feel button[aria-pressed="true"]{border-color:var(--flame);background:var(--flame-soft);color:var(--ink)}
+.phgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.fph{position:relative;aspect-ratio:1;max-width:100%;border-radius:10px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+.fph img{width:100%;height:100%;object-fit:cover;display:block}
+.fph .rm{position:absolute;top:4px;right:4px;width:30px;height:30px;border-radius:50%;border:0;background:var(--scrim);color:var(--on-photo);font-size:18px;line-height:1;cursor:pointer}
+.fph.add{display:grid;place-items:center;border:2px dashed var(--line);background:none;color:var(--muted);font-weight:700;cursor:pointer;font-size:14px}
+.fph.loading{display:grid;place-items:center}
+.spin{display:inline-block;width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--flame);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{color:var(--flame);font-weight:700;font-size:14px}
+
+/* runner detail */
+.bibcard{position:relative;background:var(--bib);color:var(--bib-ink);border-radius:12px;padding:20px 22px 18px;border:1px solid var(--line);text-align:center;overflow:hidden}
+.bibcard .band{position:absolute;left:0;right:0;top:0;height:8px;background:var(--flame)}
+.bib-top{display:flex;justify-content:space-between;gap:10px;font-family:var(--font-data);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--bib-muted);padding:0 10px}
+.bib-num{font-family:var(--font-display);font-weight:900;font-size:clamp(64px,22vw,100px);line-height:.95;margin-top:6px}
+.bib-name{font-family:var(--font-display);font-weight:800;font-size:24px;text-transform:uppercase;overflow-wrap:anywhere;line-height:1.1}
+.pin{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--pin);box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.pin.a{top:18px;left:12px}.pin.b{top:18px;right:12px}.pin.c{bottom:12px;left:12px}.pin.d{bottom:12px;right:12px}
+.quote{font-size:17px;font-style:italic;margin-top:14px}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:14px}
+.sgrid div{background:var(--surface);padding:10px 12px;min-width:0}
+.sgrid div:last-child:nth-child(odd){grid-column:1/-1}
+.sgrid span{display:block;font-family:var(--font-data);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sgrid b{font-family:var(--font-display);font-weight:800;font-size:23px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.15}
+.feelline{margin-top:12px}
+.blist{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.bchip{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;background:var(--gold-soft);font-size:13px;font-weight:700}
+.rphotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+
+/* card maker */
+.c-photos{display:flex;gap:8px;overflow-x:auto;padding:2px;margin:12px 0}
+.cph{flex:none;width:58px;height:58px;border-radius:10px;overflow:hidden;border:2px solid var(--line);padding:0;background:var(--surface-2);cursor:pointer;position:relative}
+.cph img{width:100%;height:100%;object-fit:cover;display:block}
+.cph.on{border-color:var(--flame);box-shadow:0 0 0 2px var(--flame)}
+.cph.none{width:auto;padding:0 14px;font-size:13px;font-weight:700}
+.c-stage{background:var(--surface-2);border-radius:14px;padding:12px;margin-top:4px}
+.c-stage.checker{background-color:var(--band);background-image:linear-gradient(45deg,var(--band-2) 25%,transparent 25%),linear-gradient(-45deg,var(--band-2) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,var(--band-2) 75%),linear-gradient(-45deg,transparent 75%,var(--band-2) 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.c-stage canvas{display:block;margin:0 auto;max-width:100%;max-height:min(54vh,560px);width:auto;height:auto;border-radius:10px}
+.c-help{margin-top:10px}
+
+/* photo viewer */
+#pImg{display:block;margin:0 auto;max-width:100%;max-height:70vh;border-radius:10px}
+.picklist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pickrow{width:100%;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer}
+.pickrow small{color:var(--muted)}
+.pickrow.new{grid-template-columns:1fr;font-weight:700;color:var(--flame)}
+.pickrow:disabled{opacity:.5;cursor:not-allowed}
+
+/* toast */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:50;max-width:min(520px,calc(100% - 32px));background:var(--ink);color:var(--surface);padding:12px 16px;border-radius:12px;font-weight:700;font-size:14.5px;box-shadow:var(--shadow);text-align:center}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">WEPA <em>21K</em></span>
+      <button type="button" class="crew" id="crewBtn" data-act="name" disabled>Medio maratón · San Juan</button>
+    </div>
+    <span class="chip-status" id="statusChip"><i class="pulse" aria-hidden="true"></i><span id="statusTxt">Dom 8 nov · 4:00 a.m.</span></span>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ CARRERA ============ -->
+<section class="view" id="v-carrera" data-tab="carrera" aria-label="Carrera">
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Domingo 8 de noviembre · Medio maratón 21.1 km</p>
+      <p class="clock-label" id="clockLabel">Salida en</p>
+      <div class="clock" id="clock" role="timer" aria-live="off">--:--:--</div>
+      <ul class="facts">
+        <li><b>4:00 a.m.</b><span>Salida</span></li>
+        <li><b>El Escambrón</b><span>Salida y meta</span></li>
+        <li><b>4 horas</b><span>Tiempo límite</span></li>
+      </ul>
+      <nav class="jumps" aria-label="Ir a">
+        <button type="button" data-jump="sec-horario">Horario</button>
+        <button type="button" data-jump="sec-oasis">Oasis y baños</button>
+        <button type="button" data-jump="sec-llegar">Cómo llegar</button>
+        <button type="button" data-jump="sec-tips">Tips</button>
+        <button type="button" data-jump="sec-llevar">Qué llevar</button>
+        <button type="button" data-jump="sec-meta">Después de la meta</button>
+      </nav>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="sec" id="sec-horario" aria-labelledby="h-horario">
+      <h2 id="h-horario">La madrugada</h2>
+      <p class="lede">El horario del domingo, según la guía oficial para corredores.</p>
+      <ol class="tl" id="timeline">
+        <li data-at="2026-11-08T01:00:00-04:00"><time>1:00 a.m.</time><div><b>Abre el Tren Urbano</b> para corredores hasta Sagrado Corazón. También salen las guaguas del Hotel Rumbao, en el Viejo San Juan.</div></li>
+        <li data-at="2026-11-08T03:00:00-04:00"><time>3:00 a.m.</time><div><b>Último tren y cierre de tránsito.</b> Abre el LOLA Fest en El Escambrón.</div></li>
+        <li data-at="2026-11-08T04:00:00-04:00"><time>4:00 a.m.</time><div><b>Salida</b> desde el Balneario El Escambrón.</div></li>
+        <li data-at="2026-11-08T08:00:00-04:00"><time>8:00 a.m.</time><div><b>Tiempo límite</b> de 4 horas.</div></li>
+        <li data-at="2026-11-08T10:00:00-04:00"><time>10:00 a.m.</time><div><b>Cierra el LOLA Fest.</b> Las guaguas de regreso siguen hasta 2½ horas después de que termine la carrera.</div></li>
+      </ol>
+    </section>
+
+    <section class="sec" id="sec-oasis" aria-labelledby="h-oasis">
+      <h2 id="h-oasis">Oasis y baños</h2>
+      <p class="lede">Nueve oasis, en el orden de la guía oficial. Hay baños portátiles en la salida, en la meta y en los oasis 3 y 6. Toca el círculo de la derecha al pasar cada uno.</p>
+      <div class="nextbox">
+        <div><span class="lbl">Próximo oasis</span><b id="nextO">1 · Plaza Colón</b></div>
+        <div><span class="lbl">Próximo baño</span><b id="nextW">3 · Cond. Millenium</b></div>
+        <button type="button" class="btn small ghost" data-act="oasis-reset">Reiniciar</button>
+      </div>
+      <ol class="route" id="route">
+        <li class="start">
+          <span class="node" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg></span>
+          <div><span class="o-name">Salida</span> <span class="o-sub">· Balneario El Escambrón</span><div class="o-meta"><span class="tag wc">Baño</span><span class="tag">4:00 a.m.</span></div></div>
+          <span></span>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Ave. Luis Muñoz Rivera hacia el Viejo San Juan</div><span></span></li>
+        <li class="oasis" data-i="0" data-name="Plaza Colón">
+          <span class="node" aria-hidden="true">1</span>
+          <div><span class="o-name">Plaza Colón</span> <span class="o-sub">· lado norte</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Plaza%20Col%C3%B3n%2C%20Viejo%20San%20Juan%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="0" aria-pressed="false" aria-label="Pasé el oasis 1, Plaza Colón"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>C. Norzagaray hasta el Tótem, frente a la iglesia San José, bajada por la C. del Cristo y C. Fortaleza<div class="o-meta"><span class="tag med">Paramédicos en la C. del Cristo</span></div></div><span></span></li>
+        <li class="oasis" data-i="1" data-name="Capitolio">
+          <span class="node" aria-hidden="true">2</span>
+          <div><span class="o-name">Capitolio</span> <span class="o-sub">· escalinatas del lado sur</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Capitolio%20de%20Puerto%20Rico%2C%20San%20Juan" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="1" aria-pressed="false" aria-label="Pasé el oasis 2, Capitolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Ave. Constitución</div><span></span></li>
+        <li class="oasis" data-i="2" data-name="Cond. Millenium" data-wc="1">
+          <span class="node" aria-hidden="true">3</span>
+          <div><span class="o-name">Condominio Millenium</span> <span class="o-sub">· Ave. Constitución</span><div class="o-meta"><span class="tag wc">Baño</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Condominio%20Millenium%2C%20San%20Juan%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="2" aria-pressed="false" aria-label="Pasé el oasis 3, Condominio Millenium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Expreso Luis Muñoz Rivera hacia Hato Rey</div><span></span></li>
+        <li class="oasis" data-i="3" data-name="Natatorio">
+          <span class="node" aria-hidden="true">4</span>
+          <div><span class="o-name">Natatorio</span> <span class="o-sub">· Expreso Luis Muñoz Rivera</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Natatorio%20de%20San%20Juan%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="3" aria-pressed="false" aria-label="Pasé el oasis 4, Natatorio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="oasis" data-i="4" data-name="Cond. Aquablue">
+          <span class="node" aria-hidden="true">5</span>
+          <div><span class="o-name">Condominio Aquablue</span> <span class="o-sub">· marginal, Hato Rey</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Condominio%20Aquablue%2C%20San%20Juan%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="4" aria-pressed="false" aria-label="Pasé el oasis 5, Condominio Aquablue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Ave. Roosevelt, Ave. Ponce de León y Ave. Rexach (Farmacia Caridad), de vuelta al expreso</div><span></span></li>
+        <li class="oasis" data-i="5" data-name="Sagrado Corazón" data-wc="1">
+          <span class="node" aria-hidden="true">6</span>
+          <div><span class="o-name">Sagrado Corazón</span> <span class="o-sub">· autopista</span><div class="o-meta"><span class="tag wc">Baño</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Estaci%C3%B3n%20Sagrado%20Coraz%C3%B3n%2C%20Tren%20Urbano%2C%20San%20Juan" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="5" aria-pressed="false" aria-label="Pasé el oasis 6, Sagrado Corazón"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Ave. Roberto H. Todd</div><span></span></li>
+        <li class="oasis" data-i="6" data-name="Walmart Parada 18">
+          <span class="node" aria-hidden="true">7</span>
+          <div><span class="o-name">Walmart</span> <span class="o-sub">· Parada 18, Santurce</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Walmart%20Parada%2018%2C%20Santurce%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="6" aria-pressed="false" aria-label="Pasé el oasis 7, Walmart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Expreso Baldorioty de Castro</div><span></span></li>
+        <li class="oasis" data-i="7" data-name="Monumento Baldorioty">
+          <span class="node" aria-hidden="true">8</span>
+          <div><span class="o-name">Monumento Román Baldorioty de Castro</span> <span class="o-sub">· Expreso Baldorioty</span><div class="o-meta"><a href="https://www.google.com/maps/search/?api=1&amp;query=Monumento%20a%20Rom%C3%A1n%20Baldorioty%20de%20Castro%2C%20San%20Juan" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="7" aria-pressed="false" aria-label="Pasé el oasis 8, Monumento Baldorioty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+        <li class="seg"><span class="node" aria-hidden="true"></span><div>Puente Dos Hermanos con vuelta en U, y Ave. Muñoz Rivera hasta la meta<div class="o-meta"><span class="tag">Última milla: desde la milla 12.1</span></div></div><span></span></li>
+        <li class="oasis" data-i="8" data-name="Meta · El Escambrón" data-wc="1">
+          <span class="node" aria-hidden="true">9</span>
+          <div><span class="o-name">Meta</span> <span class="o-sub">· Balneario El Escambrón</span><div class="o-meta"><span class="tag wc">Baño</span><span class="tag">LOLA Fest</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Balneario%20El%20Escambr%C3%B3n%2C%20San%20Juan%2C%20Puerto%20Rico" target="_blank" rel="noopener">Ver en mapa ↗</a></div></div>
+          <button type="button" class="o-check" data-oasis="8" aria-pressed="false" aria-label="Llegué al oasis 9, la meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        </li>
+      </ol>
+      <p class="fine" style="margin-top:10px">Esquema simplificado, no a escala. La organización puede cambiar la ruta el día del evento. <a href="https://www.lolachallenge.com/_files/ugd/a17ffe_8e0fcaee27404947a86e3ded2229b460.pdf" target="_blank" rel="noopener">Mapa oficial en la guía (PDF) ↗</a></p>
+    </section>
+
+    <section class="sec" id="sec-llegar" aria-labelledby="h-llegar">
+      <h2 id="h-llegar">Cómo llegar</h2>
+      <p class="lede">El tránsito cierra a las 3:00 a.m. Lo más fácil es tren y guagua.</p>
+      <div class="stack">
+        <article class="tipcard">
+          <h3>Tren Urbano y guagua</h3>
+          <p>Deja el carro gratis en una de estas estaciones y toma el tren hasta <b>Sagrado Corazón</b>. Allí salen las guaguas hacia la salida, con prioridad para corredores.</p>
+          <ul class="chips">
+            <li>Bayamón · Los Tráilers</li><li>Bayamón · Deportivo Municipal</li><li>Torrimar</li><li>Martínez Nadal</li><li>San Francisco</li><li>Cupey</li>
+          </ul>
+          <p class="kv"><span>Domingo</span><b>1:00 a 3:00 a.m. · un tren cada 16 minutos</b></p>
+          <p class="fine">Sagrado Corazón no tiene estacionamiento: solo se usa para tomar las guaguas.</p>
+        </article>
+        <article class="tipcard">
+          <h3>¿Dónde te deja la guagua?</h3>
+          <p>Cada entrada corresponde a ciertas waves. Tu wave sale junto a tu número en el BIB.</p>
+          <div class="seg-ctl" id="waveSel" role="group" aria-label="Mi wave">
+            <button type="button" data-wsel="1" aria-pressed="false">1</button>
+            <button type="button" data-wsel="2" aria-pressed="false">2</button>
+            <button type="button" data-wsel="3" aria-pressed="false">3</button>
+            <button type="button" data-wsel="4" aria-pressed="false">4</button>
+            <button type="button" data-wsel="A" aria-pressed="false">Adaptado</button>
+          </div>
+          <p class="wave-hint" id="waveHint" aria-live="polite">Elige tu wave para ver dónde bajarte.</p>
+          <div class="tbl-wrap">
+            <table class="entr" id="entr">
+              <thead><tr><th scope="col">Entrada</th><th scope="col">Dónde</th><th scope="col">Waves</th></tr></thead>
+              <tbody>
+                <tr data-waves="3 4"><th scope="row">A</th><td>Edificio Normandie</td><td>3 y 4</td></tr>
+                <tr data-waves="2 3"><th scope="row">B y C</th><td>Puente peatonal del Parque Luis Muñoz Rivera</td><td>2 y 3</td></tr>
+                <tr data-waves="1 2 A"><th scope="row">D</th><td>Balneario El Escambrón</td><td>1, 2 y adaptados</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+        <article class="tipcard">
+          <h3>Si te quedas en el Viejo San Juan</h3>
+          <p>Hay guaguas solo para corredores frente al Hotel Rumbao, de 1:00 a 3:00 a.m.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-tips" aria-labelledby="h-tips">
+      <h2 id="h-tips">Tips y trucos</h2>
+      <p class="lede">Lo que más ayuda en un 21K de madrugada en San Juan.</p>
+      <div class="tips">
+        <article class="tipcard">
+          <h3>Antes de salir</h3>
+          <ul class="ticks">
+            <li>Pon dos alarmas cerca de la 1:00 a.m. El último tren sale a las 3:00.</li>
+            <li>Desayuna lo de siempre, como pan con mantequilla de maní y guineo, o avena. Nada nuevo hoy.</li>
+            <li>Vaselina en los pies, la entrepierna y los pezones antes de vestirte.</li>
+            <li>El BIB va al pecho, visible y sin doblar. Es personal: si otra persona lo usa, no la cubre el seguro.</li>
+            <li>Al llegar: baño primero, cinco minutos de trote suave y después al corral.</li>
+            <li>El pronóstico del sábado daba unos 80°F de madrugada y 40% de lluvia. Una bolsa de basura sirve de poncho mientras esperas.</li>
+          </ul>
+        </article>
+        <article class="tipcard">
+          <h3>En la ruta</h3>
+          <ul class="ticks">
+            <li>Sal más lento de lo que te pide el cuerpo y corre por sensación.</li>
+            <li>Divídela en tres: hasta el km 7 controlas, hasta el 16 mantienes y el resto lo das.</li>
+            <li>En el Viejo San Juan hay cuestas y adoquines. En la bajada de la Calle del Cristo, pasos cortos.</li>
+            <li>Toma agua en casi todos los oasis aunque no tengas sed.</li>
+            <li>Si vas a pasar de hora y media, un gel cada 40 a 45 minutos. Solo si ya los probaste.</li>
+            <li>Cada wave tiene pacers con banderines de su color. Pégate al tuyo.</li>
+          </ul>
+        </article>
+        <article class="tipcard">
+          <h3>Calor y humedad</h3>
+          <ul class="ticks">
+            <li>Con humedad alta el sudor enfría menos, así que el mismo ritmo cuesta más. Está bien ir más lento.</li>
+            <li>Ropa liviana, que respire y de colores claros. Usa protector solar.</li>
+            <li>Si sientes mareo, debilidad, náuseas o dolor de cabeza, detente, busca un lugar fresco y pide ayuda médica.</li>
+            <li>Hay ambulancias en la ruta y en la meta, y paramédicos en la Calle del Cristo.</li>
+          </ul>
+          <p class="src">Recomendaciones de la guía oficial, basadas en el ACSM y los CDC.</p>
+        </article>
+        <article class="tipcard">
+          <h3>La Milla New Balance</h3>
+          <ul class="ticks">
+            <li>Es la última milla de la ruta: desde la milla 12.1 hasta la meta.</li>
+            <li>Los dos más rápidos en ese tramo, por sexo y categoría, ganan un par de tenis.</li>
+            <li>Aplica solo a inscritos en el Full Challenge de 18 años o más. Guarda algo para el final.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" id="sec-llevar" aria-labelledby="h-llevar">
+      <h2 id="h-llevar">Qué llevar</h2>
+      <p class="lede" id="ckTxt">0 de 10 listos. Se guarda solo en este dispositivo.</p>
+      <div class="progress" aria-hidden="true"><i id="ckBar"></i></div>
+      <ul class="checklist" id="checklist">
+        <li><label><input type="checkbox" id="ck-bib" data-ck="bib"><span>BIB puesto en la camisa, al pecho</span></label></li>
+        <li><label><input type="checkbox" id="ck-tenis" data-ck="tenis"><span>Tenis y medias ya usados</span></label></li>
+        <li><label><input type="checkbox" id="ck-ropa" data-ck="ropa"><span>Ropa liviana y gorra</span></label></li>
+        <li><label><input type="checkbox" id="ck-carga" data-ck="carga"><span>Reloj y celular cargados</span></label></li>
+        <li><label><input type="checkbox" id="ck-vaselina" data-ck="vaselina"><span>Vaselina para los roces</span></label></li>
+        <li><label><input type="checkbox" id="ck-geles" data-ck="geles"><span>Geles y medio guineo para antes de la salida</span></label></li>
+        <li><label><input type="checkbox" id="ck-id" data-ck="id"><span>ID, tarjeta y llave del carro</span></label></li>
+        <li><label><input type="checkbox" id="ck-papel" data-ck="papel"><span>Papel de baño</span></label></li>
+        <li><label><input type="checkbox" id="ck-bolsa" data-ck="bolsa"><span>Bolsa de basura de poncho</span></label></li>
+        <li><label><input type="checkbox" id="ck-carro" data-ck="carro"><span>En el carro: ropa seca, chancletas y merienda</span></label></li>
+      </ul>
+    </section>
+
+    <section class="sec" id="sec-meta" aria-labelledby="h-meta">
+      <h2 id="h-meta">Después de la meta</h2>
+      <p class="lede">El LOLA Fest en El Escambrón sigue hasta las 10:00 a.m., con música, refrigerios, masajes y fotos.</p>
+      <div class="tips">
+        <article class="tipcard">
+          <h3>Recupera y celebra</h3>
+          <ul class="ticks">
+            <li>Camina unos minutos, estira suave y come algo con carbohidrato y proteína.</li>
+            <li>Repón líquidos con electrolitos durante el día.</li>
+            <li>La joyería Kury graba tu nombre y tu tiempo en la medalla, con costo adicional.</li>
+            <li>Añade tu tiempo y tus fotos en la pestaña Grupo y crea tu tarjeta finisher.</li>
+          </ul>
+        </article>
+        <article class="tipcard">
+          <h3>El regreso</h3>
+          <p>Cruza la Ave. Constitución frente al Parque Luis Muñoz Rivera y baja por la Calle Ramón Power hasta la Calle Luis Armando «Vico C». De ahí salen las guaguas a Sagrado Corazón y al Viejo San Juan, hasta 2½ horas después de que termine la carrera.</p>
+          <p>Skootel regala un viaje de hasta 30 minutos con el código <span class="code">LOLA2026</span>, en la app: Promotions › Add New Promo. Válido hasta el 9 de noviembre, para los primeros 10,000.</p>
+        </article>
+        <article class="tipcard">
+          <h3>Desayuno cerca de la meta</h3>
+          <ul class="chips">
+            <li>Café Cuatro Sombras</li><li>Caficultura</li><li>Café Mômé</li><li>Bertha's Bakery</li><li>Don Ruiz Coffee Shop</li><li>La Mezcla Coffee &amp; Tea</li>
+          </ul>
+          <p class="fine">Sugerencias de PlateaPR en Puerta de Tierra, el Viejo San Juan y Condado. Confirma el horario: hay calles cerradas por la carrera.</p>
+        </article>
+        <article class="tipcard">
+          <h3>Por una buena causa</h3>
+          <p>Los fondos de este año van a la Liga Puertorriqueña Contra el Cáncer y su Hospital Oncológico. Para donar: ATH Móvil › Donaciones › <span class="code">/LigaCancerPR</span>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="h-fuentes">
+      <h2 id="h-fuentes">Fuentes</h2>
+      <ul class="ticks">
+        <li><a href="https://www.lolachallenge.com/_files/ugd/a17ffe_8e0fcaee27404947a86e3ded2229b460.pdf" target="_blank" rel="noopener">Guía para corredores 2026, oficial (PDF) ↗</a></li>
+        <li><a href="https://www.plateapr.com/que-hacer/guia-lola-challenge-2026-rutas-transporte-donde-comer" target="_blank" rel="noopener">Guía del Lola Challenge Weekend 2026, PlateaPR ↗</a></li>
+        <li><a href="https://www.lolachallenge.com/" target="_blank" rel="noopener">lolachallenge.com ↗</a></li>
+      </ul>
+      <p class="fine" style="margin-top:12px">Wepa 21K es una página no oficial hecha para el grupo. La organización puede cambiar rutas y horarios el día del evento; confirma en la guía oficial.</p>
+    </section>
+  </div>
+</section>
+
+<!-- ============ GRUPO ============ -->
+<section class="view" id="v-grupo" data-tab="grupo" aria-label="Grupo" hidden>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h2>El grupo</h2>
+        <p class="lede">Tiempos, logros y ¡Wepa! de todos. Toca a alguien para ver sus stats.</p>
+      </div>
+      <div class="head-btns">
+        <button type="button" class="btn" id="editMine" data-act="edit-mine" hidden>Editar mis stats</button>
+        <button type="button" class="btn primary" id="addBtn" data-act="add" hidden>+ Añadir mis stats</button>
+      </div>
+    </div>
+    <p class="sync" role="status" hidden></p>
+    <p class="note" id="connNote" hidden></p>
+    <div class="note tip" id="ownerTip" hidden>
+      <p><b>Para que el grupo añada sus stats y fotos:</b> usa Compartir e invita a cada corredor por email como <b>Editor</b>. No actives el enlace público: con enlace público, los invitados solo pueden ver. Cada persona entra con su cuenta de Claude. Si alguien no tiene cuenta, añade sus stats tú.</p>
+      <button type="button" class="btn small" data-act="tip-ok">Entendido</button>
+    </div>
+    <div class="tiles" id="tiles" hidden></div>
+    <div id="podium"></div>
+    <div id="board">
+      <div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando el grupo…</p></div>
+    </div>
+    <details class="legend">
+      <summary>Cómo se ganan los logros</summary>
+      <ul>
+        <li><span>🥇</span><span><b>Podio del grupo.</b> Los tres mejores tiempos oficiales.</span></li>
+        <li><span>🔮</span><span><b>Oráculo.</b> El pronóstico más cercano a su tiempo real. Cuenta si lo pusiste antes de la salida y hay al menos dos pronósticos.</span></li>
+        <li><span>⚡</span><span><b>PR.</b> Su mejor 21K.</span></li>
+        <li><span>⭐</span><span><b>Debut 21K.</b> Su primer medio maratón.</span></li>
+        <li><span>📈</span><span><b>Split negativo.</b> Segunda mitad más rápida que la primera. Pon tu tiempo a mitad de carrera.</span></li>
+        <li><span>⏱️</span><span><b>Sub 1:30, 1:45, 2:00 o 2:30.</b> Terminó por debajo de esa marca.</span></li>
+        <li><span>🏆</span><span><b>Full Challenge.</b> 5K, 10K y 21K el mismo fin de semana.</span></li>
+        <li><span>🔥</span><span><b>Más ¡Wepa!</b> Quien más ¡Wepa! recibió del grupo, con mínimo dos.</span></li>
+        <li><span>🏅</span><span><b>Finisher.</b> Cruzó la meta. Se lo llevan todos.</span></li>
+      </ul>
+    </details>
+    <div class="foot-actions">
+      <button type="button" class="btn ghost" data-act="csv">Descargar resultados (CSV)</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRONÓSTICOS ============ -->
+<section class="view" id="v-pronosticos" data-tab="pronosticos" aria-label="Pronósticos" hidden>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h2>Pronósticos</h2>
+        <p class="lede">Pon tu tiempo estimado antes de las 4:00 a.m. Cuando lleguen los tiempos oficiales, el pronóstico más exacto gana el logro Oráculo 🔮.</p>
+      </div>
+      <div class="head-btns">
+        <button type="button" class="btn primary" id="goalBtn" data-act="add-goal" hidden>+ Mi pronóstico</button>
+      </div>
+    </div>
+    <p class="sync" hidden></p>
+    <div id="oracle">
+      <div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando pronósticos…</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ÁLBUM ============ -->
+<section class="view" id="v-album" data-tab="album" aria-label="Álbum" hidden>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <h2>Álbum</h2>
+        <p class="lede">Las fotos del grupo. Toca una para verla o para crear una tarjeta para compartir.</p>
+      </div>
+      <div class="head-btns">
+        <button type="button" class="btn primary" id="photoBtn" data-act="add-photo" hidden>+ Subir fotos</button>
+      </div>
+    </div>
+    <p class="sync" hidden></p>
+    <div class="album is-empty" id="album">
+      <div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando fotos…</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="tabs" aria-label="Secciones">
+  <div class="in">
+    <button type="button" data-tab="carrera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg><span>Carrera</span></button>
+    <button type="button" data-tab="grupo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M9 21V9h6v12"/><path d="M3 21v-7h6"/><path d="M15 21v-5h6v5"/></svg><span>Grupo</span></button>
+    <button type="button" data-tab="pronosticos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2"/><path d="M10 2h4"/></svg><span>Pronósticos</span></button>
+    <button type="button" data-tab="album"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg><span>Álbum</span></button>
+  </div>
+</nav>
+
+<!-- ============ DIALOGS ============ -->
+<dialog class="sheet" id="dlgForm" aria-labelledby="fTitle">
+  <form id="runnerForm" novalidate>
+    <div class="sheet-h"><h3 id="fTitle">Añadir corredor</h3><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+    <div class="sheet-b">
+      <fieldset>
+        <legend>Antes de la salida</legend>
+        <div class="field"><label for="fName">Nombre o apodo</label><input id="fName" maxlength="40" autocomplete="nickname"></div>
+        <div class="grid2">
+          <div class="field"><label for="fBib">Número (BIB)</label><input id="fBib" inputmode="numeric" maxlength="6" autocomplete="off"></div>
+          <div class="field"><label for="fWave">Wave</label>
+            <select id="fWave"><option value="">—</option><option value="1">Wave 1</option><option value="2">Wave 2</option><option value="3">Wave 3</option><option value="4">Wave 4</option><option value="A">Adaptado</option></select>
+          </div>
+        </div>
+        <div class="field"><label for="fGoal">Pronóstico de tiempo</label><input id="fGoal" class="tin" inputmode="decimal" placeholder="2:05:00" autocomplete="off"><small class="hint" id="hGoal"></small></div>
+        <label class="check"><input type="checkbox" id="fDebut"><span>Es mi primer 21K</span></label>
+        <label class="check"><input type="checkbox" id="fFull"><span>Corro el Full Challenge (5K, 10K y 21K)</span></label>
+      </fieldset>
+      <fieldset>
+        <legend>Resultados <small>después de la meta</small></legend>
+        <div class="field"><label for="fTime">Tiempo oficial (chip)</label><input id="fTime" class="tin" inputmode="decimal" placeholder="1:58:34" autocomplete="off"><small class="hint" id="hTime"></small></div>
+        <div class="grid2">
+          <div class="field"><label for="fHalf">Tiempo a mitad</label><input id="fHalf" class="tin" inputmode="decimal" placeholder="0:59:10" autocomplete="off"><small class="hint" id="hHalf"></small></div>
+          <div class="field"><label for="fPlace">Posición general</label><input id="fPlace" type="number" inputmode="numeric" min="1" max="50000"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="fHr">FC promedio (lpm)</label><input id="fHr" type="number" inputmode="numeric" min="60" max="230"></div>
+          <div class="field"><label for="fCad">Cadencia (ppm)</label><input id="fCad" type="number" inputmode="numeric" min="100" max="240"></div>
+        </div>
+        <label class="check"><input type="checkbox" id="fPr"><span>Hice PR, mi mejor 21K</span></label>
+        <div class="field"><span class="lbl-like" id="feelLbl">¿Cómo te sentiste?</span><div class="feel" id="fFeel" role="group" aria-labelledby="feelLbl"></div></div>
+        <div class="field"><label for="fNote">Una frase de tu carrera</label><textarea id="fNote" maxlength="140" rows="2" placeholder="La bajada del Cristo con lluvia, inolvidable."></textarea></div>
+      </fieldset>
+      <fieldset>
+        <legend>Fotos <small>hasta 4</small></legend>
+        <div class="phgrid" id="fPhotos"></div>
+        <input type="file" id="fFile" accept="image/*" multiple hidden>
+        <p class="fine" id="fPhotoNote">Lo que guardes aquí lo ve todo el que tenga acceso a este tablero.</p>
+      </fieldset>
+      <p class="err" id="fErr" role="alert" hidden></p>
+    </div>
+    <div class="sheet-f">
+      <button type="button" class="btn ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn primary" id="fSave">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="sheet" id="dlgRunner" aria-labelledby="rTitle">
+  <div class="sheet-h"><h3 id="rTitle">Corredor</h3><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+  <div class="sheet-b" id="rBody"></div>
+  <div class="sheet-f" id="rFoot"></div>
+</dialog>
+
+<dialog class="sheet" id="dlgCard" aria-labelledby="cTitle">
+  <div class="sheet-h"><h3 id="cTitle">Tarjeta para compartir</h3><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+  <div class="sheet-b">
+    <div class="seg-ctl" id="cTpl" role="group" aria-label="Formato">
+      <button type="button" data-tpl="story" aria-pressed="true">Historia 9:16</button>
+      <button type="button" data-tpl="post" aria-pressed="false">Post 4:5</button>
+      <button type="button" data-tpl="sticker" aria-pressed="false">Sticker</button>
+    </div>
+    <div class="c-photos" id="cPhotos"></div>
+    <div class="c-stage" id="cStage"><canvas id="cCanvas" width="1080" height="1920" role="img" aria-label="Vista previa de la tarjeta"></canvas></div>
+    <p class="fine c-help" id="cHelp"></p>
+  </div>
+  <div class="sheet-f"><button type="button" class="btn primary" id="cSave">Guardar imagen</button></div>
+</dialog>
+
+<dialog class="sheet" id="dlgPhoto" aria-labelledby="pTitle">
+  <div class="sheet-h"><b id="pTitle">Foto</b><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+  <div class="sheet-b"><img id="pImg" class="ph" alt=""></div>
+  <div class="sheet-f">
+    <button type="button" class="btn ghost" id="pRunner">Ver corredor</button>
+    <button type="button" class="btn primary" id="pCard">Crear tarjeta</button>
+  </div>
+</dialog>
+
+<dialog class="sheet small" id="dlgName" aria-labelledby="nTitle">
+  <form id="nameForm" novalidate>
+    <div class="sheet-h"><h3 id="nTitle">Nombre del grupo</h3><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+    <div class="sheet-b"><div class="field"><label for="gName">Sale arriba y en las tarjetas</label><input id="gName" maxlength="32" autocomplete="off"></div></div>
+    <div class="sheet-f"><button type="button" class="btn ghost" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>
+  </form>
+</dialog>
+
+<dialog class="sheet small" id="dlgPick" aria-labelledby="kTitle">
+  <div class="sheet-h"><h3 id="kTitle">¿De quién son las fotos?</h3><button type="button" class="x" data-close aria-label="Cerrar">×</button></div>
+  <div class="sheet-b" id="pickList"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/claude-supabase-shim.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* ---------- constants ---------- */
+const START = Date.parse('2026-11-08T04:00:00-04:00');
+const LIMIT = START + 4 * 3600e3;
+const KM = 21.0975, MI = 13.1094;
+const TABS = ['carrera', 'grupo', 'pronosticos', 'album'];
+const FD = '"Big Shoulders Display", "Arial Narrow", Impact, sans-serif';
+const FM = '"Martian Mono", ui-monospace, Menlo, monospace';
+const FB = '"Atkinson Hyperlegible", system-ui, sans-serif';
+const SUBS = [[5400, 'Sub 1:30'], [6300, 'Sub 1:45'], [7200, 'Sub 2:00'], [9000, 'Sub 2:30']];
+const FEEL = [[1, '😵', 'Sobreviví'], [2, '😮‍💨', 'Duro'], [3, '🙂', 'Bien'], [4, '😄', 'Muy bien'], [5, '🚀', 'Volando']];
+const WAVES = { '1': 'Wave 1', '2': 'Wave 2', '3': 'Wave 3', '4': 'Wave 4', 'A': 'Adaptado' };
+const MAX_PH = 4;
+const OASIS_KEY = 'wepa21k.oasis', WAVE_KEY = 'wepa21k.wave', CK_KEY = 'wepa21k.check';
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = (n) => String(n).padStart(2, '0');
+const isNum = (v) => typeof v === 'number' && isFinite(v);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const okId = (id) => typeof id === 'string' && /^[A-Za-z0-9_-]{6,80}$/.test(id);
+const blobUrl = (id) => (typeof window.WEPA_BLOB_URL === 'function' ? window.WEPA_BLOB_URL(id) : '/_blob/' + id);
+const nameCmp = (a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'es');
+const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+const ls = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  getJSON(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } },
+  setJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+function fmtT(s) {
+  if (!isNum(s)) return '—';
+  s = Math.round(s);
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+  return h ? `${h}:${pad(m)}:${pad(x)}` : `${m}:${pad(x)}`;
+}
+function fmtPace(s, d = KM) {
+  if (!isNum(s) || s <= 0) return '—';
+  const p = Math.round(s / d);
+  return `${Math.floor(p / 60)}:${pad(p % 60)}`;
+}
+function fmtDiff(d) {
+  if (!isNum(d)) return '—';
+  if (Math.round(d) === 0) return '±0:00';
+  return (d < 0 ? '−' : '+') + fmtT(Math.abs(d));
+}
+function spoken(s) {
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = Math.round(s % 60);
+  return `${h ? h + ' h ' : ''}${m} min ${pad(x)} s`;
+}
+/* Accepts 1:58:34, 1.58.34, 1 58 34, 15834, 2:05 (h:mm) or 58:30 (mm:ss). Returns seconds, null if empty, NaN if invalid. */
+function parseT(str) {
+  const t = String(str || '').trim();
+  if (!t) return null;
+  let parts;
+  if (/^\d+$/.test(t)) {
+    if (t.length <= 2) parts = [t];
+    else if (t.length <= 4) parts = [t.slice(0, -2), t.slice(-2)];
+    else if (t.length <= 6) parts = [t.slice(0, -4), t.slice(-4, -2), t.slice(-2)];
+    else return NaN;
+  } else if (/^\d+(?:[:.,'h\s]+\d+){1,2}$/i.test(t)) {
+    parts = t.split(/[^\d]+/).filter(Boolean);
+  } else return NaN;
+  const n = parts.map(Number);
+  if (n.length === 3) { if (n[1] > 59 || n[2] > 59) return NaN; return n[0] * 3600 + n[1] * 60 + n[2]; }
+  if (n.length === 2) { if (n[1] > 59) return NaN; return n[0] <= 5 ? n[0] * 3600 + n[1] * 60 : n[0] * 60 + n[1]; }
+  return n[0] <= 5 ? n[0] * 3600 : n[0] * 60;
+}
+function initials(n) {
+  const w = String(n || '').trim().split(/\s+/).map((x) => (x.match(/[\p{L}\p{N}]/u) || [''])[0]).filter(Boolean);
+  return ((w[0] || '?') + (w[1] || '')).toUpperCase();
+}
+function slug(s) {
+  return String(s || 'corredor').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'corredor';
+}
+
+/* ---------- state ---------- */
+const S = {
+  tab: null, db: null, user: null, assets: null, downloads: null,
+  me: { key: null, isOwner: false }, write: 'unknown', conn: 'loading',
+  board: { name: '' }, runners: [], reactions: [], C: null,
+  busy: new Set(), form: null, openRid: null, delAsk: null, photo: null, drawP: null,
+  pendR: false, pendX: false, saving: 0
+};
+const CARD = { rid: null, tpl: 'story', photo: null };
+
+const dlgForm = $('#dlgForm'), dlgRunner = $('#dlgRunner'), dlgCard = $('#dlgCard');
+const dlgPhoto = $('#dlgPhoto'), dlgName = $('#dlgName'), dlgPick = $('#dlgPick');
+const clockEl = $('#clock'), clockLabel = $('#clockLabel'), statusTxt = $('#statusTxt'), statusChip = $('#statusChip');
+
+/* ---------- toast ---------- */
+let toastT = null;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastT);
+  toastT = setTimeout(() => { t.hidden = true; }, 3600);
+}
+
+/* ---------- race clock ---------- */
+function digits(s) { return Array.from(s).map((c) => (/\d/.test(c) ? `<span>${c}</span>` : `<i>${c}</i>`)).join(''); }
+function tick() {
+  const now = Date.now();
+  let label, html, chip, live = false;
+  if (now < START) {
+    const d = Math.floor((START - now) / 1000), h = Math.floor(d / 3600), m = Math.floor((d % 3600) / 60), x = d % 60;
+    label = 'Salida en';
+    html = digits(`${pad(h)}:${pad(m)}:${pad(x)}`);
+    chip = h >= 24 ? 'Dom 8 nov · 4:00 a.m.' : `Salida en ${h} h ${pad(m)} min`;
+  } else if (now < LIMIT) {
+    const e = Math.floor((now - START) / 1000), h = Math.floor(e / 3600), m = Math.floor((e % 3600) / 60), x = e % 60;
+    label = 'En ruta desde la salida';
+    html = digits(`${h}:${pad(m)}:${pad(x)}`);
+    chip = `En ruta · ${h}:${pad(m)}:${pad(x)}`;
+    live = true;
+  } else {
+    label = 'Carrera terminada';
+    html = digits('21.1') + '<small>KM</small>';
+    chip = 'Resultados del grupo';
+  }
+  if (clockEl.dataset.v !== html) { clockEl.innerHTML = html; clockEl.dataset.v = html; }
+  clockLabel.textContent = label;
+  statusTxt.textContent = chip;
+  statusChip.classList.toggle('live', live);
+}
+function markTimeline() {
+  const now = Date.now();
+  let nextFound = false;
+  $$('#timeline li').forEach((li) => {
+    const at = Date.parse(li.dataset.at);
+    const past = at <= now;
+    li.classList.toggle('past', past);
+    const isNext = !past && !nextFound;
+    if (isNext) nextFound = true;
+    li.classList.toggle('next', isNext);
+  });
+}
+
+/* ---------- tabs ---------- */
+function route() {
+  const h = (location.hash || '').slice(1);
+  showTab(TABS.includes(h) ? h : (Date.now() < LIMIT ? 'carrera' : 'grupo'));
+}
+function showTab(t) {
+  if (S.tab === t) return;
+  S.tab = t;
+  $$('.view').forEach((v) => { v.hidden = v.dataset.tab !== t; });
+  $$('.tabs [data-tab]').forEach((b) => { if (b.dataset.tab === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  window.scrollTo(0, 0);
+}
+function goTab(t) {
+  if (S.tab === t) { window.scrollTo({ top: 0, behavior: reduced() ? 'auto' : 'smooth' }); return; }
+  try { if ((location.hash || '').slice(1) === t) showTab(t); else location.hash = t; }
+  catch (e) { showTab(t); }
+  if (S.tab !== t) showTab(t);
+}
+
+/* ---------- oasis, wave, checklist (per device) ---------- */
+function renderOasis() {
+  const done = new Set(ls.getJSON(OASIS_KEY, []));
+  let nextO = null, nextW = null;
+  $$('#route li.oasis').forEach((li) => {
+    const i = +li.dataset.i, d = done.has(i);
+    li.classList.toggle('done', d);
+    const b = $('.o-check', li);
+    if (b) b.setAttribute('aria-pressed', String(d));
+    if (!d && !nextO) nextO = li;
+    if (!d && li.dataset.wc && !nextW) nextW = li;
+  });
+  $('#nextO').textContent = nextO ? `${+nextO.dataset.i + 1} · ${nextO.dataset.name}` : '¡Llegaste a la meta!';
+  $('#nextW').textContent = nextW ? `${+nextW.dataset.i + 1} · ${nextW.dataset.name}` : '—';
+}
+function toggleOasis(i) {
+  const s = new Set(ls.getJSON(OASIS_KEY, []));
+  if (s.has(i)) s.delete(i); else s.add(i);
+  ls.setJSON(OASIS_KEY, Array.from(s));
+  renderOasis();
+}
+const WAVE_HINT = {
+  '1': 'Wave 1: bájate en la entrada D, Balneario El Escambrón.',
+  '2': 'Wave 2: entradas B y C (puente peatonal del Parque Luis Muñoz Rivera) o D (El Escambrón).',
+  '3': 'Wave 3: entrada A (Edificio Normandie) o B y C (puente peatonal).',
+  '4': 'Wave 4: entrada A, Edificio Normandie.',
+  'A': 'Atletas adaptados: entrada D, Balneario El Escambrón.'
+};
+function renderWave() {
+  const w = ls.get(WAVE_KEY) || '';
+  $$('#waveSel button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.wsel === w)));
+  $$('#entr tr[data-waves]').forEach((tr) => tr.classList.toggle('hl', !!w && tr.dataset.waves.split(' ').includes(w)));
+  $('#waveHint').textContent = WAVE_HINT[w] || 'Elige tu wave para ver dónde bajarte.';
+}
+function renderChecklist() {
+  const s = new Set(ls.getJSON(CK_KEY, []));
+  const boxes = $$('#checklist input[data-ck]');
+  boxes.forEach((b) => { b.checked = s.has(b.dataset.ck); });
+  const n = boxes.filter((b) => b.checked).length;
+  $('#ckTxt').textContent = n === boxes.length ? '¡Todo listo! Se guarda solo en este dispositivo.' : `${n} de ${boxes.length} listos. Se guarda solo en este dispositivo.`;
+  $('#ckBar').style.width = `${(n / boxes.length) * 100}%`;
+}
+
+/* ---------- shared data ---------- */
+function clean(id, d) {
+  d = d || {};
+  const n = (v) => (isNum(v) ? v : null);
+  const s = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
+  return {
+    id,
+    name: s(d.name, 40).trim() || 'Sin nombre',
+    bib: s(d.bib, 8).replace(/\D/g, ''),
+    wave: Object.prototype.hasOwnProperty.call(WAVES, d.wave) ? d.wave : '',
+    goal: n(d.goal), goalAt: n(d.goalAt), time: n(d.time), half: n(d.half),
+    hr: n(d.hr), cadence: n(d.cadence), place: n(d.place),
+    debut: d.debut === true, full: d.full === true, pr: d.pr === true,
+    feel: n(d.feel), note: s(d.note, 140),
+    photos: Array.isArray(d.photos) ? d.photos.filter(okId).slice(0, MAX_PH) : [],
+    owner: s(d.owner, 64), createdAt: n(d.createdAt) || 0, updatedAt: n(d.updatedAt) || 0
+  };
+}
+const getR = (id) => S.runners.find((r) => r.id === id) || null;
+const isLate = (r) => isNum(r.goalAt) && r.goalAt > START;
+const canWriteUI = () => !!S.db && S.write !== 'no' && S.conn !== 'off';
+const myRunners = () => S.runners.filter((r) => r.owner && r.owner === S.me.key);
+const readOnlyMsg = () => 'Para añadir datos, pídele a quien creó el tablero que te invite por email como Editor.';
+
+async function hashHex(s) {
+  try {
+    const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(d), (b) => b.toString(16).padStart(2, '0')).join('');
+  } catch (e) {
+    let h1 = 0x811c9dc5, h2 = 0x9747b28c;
+    for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 16777619) >>> 0; h2 = Math.imul(h2 ^ c, 2246822507) >>> 0; }
+    return h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0') + '0000';
+  }
+}
+async function initMe() {
+  let base = null;
+  if (S.user) { try { base = await S.user.id(); } catch (e) {} }
+  if (!base) {
+    base = ls.get('wepa21k.anon');
+    if (!base) { base = 'anon-' + Math.random().toString(36).slice(2) + Date.now().toString(36); ls.set('wepa21k.anon', base); }
+  }
+  S.me.key = 'p' + (await hashHex(String(base))).slice(0, 20);
+}
+
+async function withRetry(fn) {
+  S.saving++;
+  renderSync();
+  try {
+    try { return await fn(); }
+    catch (e) {
+      if (e && e.code === 'unavailable') { await sleep(400 + Math.random() * 600); return await fn(); }
+      throw e;
+    }
+  } finally {
+    S.saving = Math.max(0, S.saving - 1);
+    renderSync();
+  }
+}
+function renderSync() {
+  let cls = '', txt = '';
+  if (!S.db) txt = '';
+  else if (S.conn === 'loading') { cls = 'wait'; txt = 'Conectando con el grupo…'; }
+  else if (S.conn === 'slow' || S.conn === 'error') { cls = 'off'; txt = 'Sin conexión ahora: lo que ves puede estar desactualizado'; }
+  else if (S.conn === 'off') { cls = 'off'; txt = 'Sin acceso a los datos del grupo'; }
+  else if (S.saving > 0 || S.pendR || S.pendX) { cls = 'wait'; txt = 'Guardando…'; }
+  else { cls = 'ok'; txt = 'En vivo · todo guardado'; }
+  $$('.sync').forEach((el) => { el.hidden = !txt; el.className = 'sync' + (cls ? ' ' + cls : ''); el.textContent = txt; });
+}
+function handleWriteError(e) {
+  const c = e && e.code;
+  let m;
+  if (c === 'invalid_argument' && S.write !== 'yes') { S.write = 'no'; m = 'Este tablero está en modo solo ver para ti. ' + readOnlyMsg(); renderData(); }
+  else if (c === 'quota_exceeded') m = 'El tablero llegó a su límite de espacio. Borra entradas que no se usen.';
+  else if (c === 'resource_exhausted') m = 'Muchos cambios seguidos. Espera unos segundos y vuelve a intentar.';
+  else if (c === 'revoked') { S.conn = 'off'; m = 'Se perdió el acceso a los datos del tablero. Recarga la página.'; renderData(); }
+  else if (c === 'not_granted' || c === 'capability_disabled' || c === 'capability_removed') m = 'Aquí no se puede guardar. Abre el tablero en Claude con tu cuenta.';
+  else m = 'No se pudo guardar. Revisa tu conexión y vuelve a intentar.';
+  toast(m);
+  return m;
+}
+
+async function boot() {
+  const use = (n) => {
+    try {
+      if (window.claude && typeof window.claude.use === 'function') return Promise.resolve(window.claude.use(n)).catch(() => null);
+    } catch (e) {}
+    return Promise.resolve(null);
+  };
+  const [db, user, assets, downloads] = await Promise.all([use('db'), use('user'), use('assets'), use('downloads')]);
+  S.db = db; S.user = user; S.assets = assets; S.downloads = downloads;
+  if (user) {
+    try { S.me.isOwner = !!(await user.isOwner()); } catch (e) {}
+    try { const c = await user.can('data.write'); S.write = c === true ? 'yes' : c === false ? 'no' : 'unknown'; } catch (e) {}
+    if (S.write === 'unknown') { try { if (await user.canEdit()) S.write = 'yes'; } catch (e) {} }
+  }
+  await initMe();
+  if (!db) { S.conn = 'off'; renderData(); return; }
+  subscribe();
+  renderData();
+}
+
+function subscribe() {
+  const timer = setTimeout(() => { if (S.conn === 'loading') { S.conn = 'slow'; renderData(); } }, 10000);
+  const fail = (e) => { clearTimeout(timer); S.conn = e && e.code === 'revoked' ? 'off' : 'error'; renderData(); };
+  S.db.collection('runners').onSnapshot((snap) => {
+    S.runners = snap.docs.filter((d) => d.exists).map((d) => clean(d.id, d.data()));
+    S.pendR = !!(snap.metadata && snap.metadata.hasPendingWrites);
+    if (!snap.metadata.fromCache) { clearTimeout(timer); S.conn = 'ok'; }
+    renderData();
+  }, fail);
+  S.db.collection('reactions').onSnapshot((snap) => {
+    S.reactions = snap.docs.filter((d) => d.exists).map((d) => {
+      const x = d.data() || {};
+      return { id: d.id, r: typeof x.r === 'string' ? x.r : '', by: typeof x.by === 'string' ? x.by : '' };
+    });
+    S.pendX = !!(snap.metadata && snap.metadata.hasPendingWrites);
+    renderData();
+  }, () => {});
+  S.db.doc('meta/board').onSnapshot((snap) => {
+    const x = snap.exists ? (snap.data() || {}) : {};
+    S.board = { name: typeof x.name === 'string' ? x.name.slice(0, 32) : '' };
+    renderHeader();
+  }, () => {});
+}
+
+/* ---------- scoring ---------- */
+function badgesFor(r, rank, oracle, mostW) {
+  const b = [];
+  const t = r.time > 0 ? r.time : null;
+  if (t && rank === 1) b.push(['🥇', '1.º del grupo']);
+  else if (t && rank === 2) b.push(['🥈', '2.º del grupo']);
+  else if (t && rank === 3) b.push(['🥉', '3.º del grupo']);
+  if (oracle) b.push(['🔮', 'Oráculo']);
+  if (t && r.pr) b.push(['⚡', 'PR']);
+  if (t && r.debut) b.push(['⭐', 'Debut 21K']);
+  if (t && isNum(r.half) && r.half > 0 && r.half < t && t - r.half < r.half) b.push(['📈', 'Split negativo']);
+  if (t) { const sub = SUBS.find(([lim]) => t < lim); if (sub) b.push(['⏱️', sub[1]]); }
+  if (t && r.full) b.push(['🏆', 'Full Challenge']);
+  if (mostW) b.push(['🔥', 'Más ¡Wepa!']);
+  if (t) b.push(['🏅', 'Finisher']);
+  return b;
+}
+function computeAll() {
+  const rs = S.runners;
+  const ids = new Set(rs.map((r) => r.id));
+  const wep = {}, mine = new Set();
+  for (const x of S.reactions) {
+    if (!ids.has(x.r)) continue;
+    wep[x.r] = (wep[x.r] || 0) + 1;
+    if (x.by && x.by === S.me.key) mine.add(x.r);
+  }
+  const fin = rs.filter((r) => r.time > 0).sort((a, b) => a.time - b.time || nameCmp(a, b));
+  const rank = {};
+  let prevT = null, prevR = 0;
+  fin.forEach((r, i) => { if (r.time !== prevT) prevR = i + 1; prevT = r.time; rank[r.id] = prevR; });
+  const pend = rs.filter((r) => !(r.time > 0)).sort((a, b) => (isNum(a.goal) ? a.goal : 1e9) - (isNum(b.goal) ? b.goal : 1e9) || nameCmp(a, b));
+  const elig = fin.filter((r) => r.goal > 0 && !isLate(r));
+  const oracle = new Set();
+  if (elig.length >= 2) {
+    const min = Math.min(...elig.map((r) => Math.abs(r.time - r.goal)));
+    elig.forEach((r) => { if (Math.abs(r.time - r.goal) === min) oracle.add(r.id); });
+  }
+  let topW = 0, topIds = [];
+  for (const r of rs) {
+    const w = wep[r.id] || 0;
+    if (w > topW) { topW = w; topIds = [r.id]; } else if (w && w === topW) topIds.push(r.id);
+  }
+  const mostW = topW >= 2 && topIds.length === 1 ? topIds[0] : null;
+  const badges = {};
+  for (const r of rs) badges[r.id] = badgesFor(r, rank[r.id], oracle.has(r.id), mostW === r.id);
+  return { fin, pend, rank, wep, mine, oracle, badges };
+}
+
+/* ---------- rendering ---------- */
+function avatar(r, cls) {
+  const id = (r.photos || []).find(okId);
+  return `<span class="av ${cls || ''}" aria-hidden="true">${esc(initials(r.name))}${id ? `<img class="ph" src="${blobUrl(id)}" alt="" loading="lazy">` : ''}</span>`;
+}
+function renderData() {
+  S.C = computeAll();
+  renderSync();
+  renderHeader();
+  renderGrupo();
+  renderOracle();
+  renderAlbum();
+  if (dlgRunner.open) renderRunner();
+  if (dlgPick.open) renderPick();
+}
+function renderHeader() {
+  const b = $('#crewBtn');
+  const name = (S.board.name || '').trim();
+  const can = canWriteUI();
+  b.disabled = !can;
+  if (name) b.textContent = can ? `${name} ✎` : name;
+  else b.textContent = can ? 'Ponle nombre al grupo ✎' : 'Medio maratón · San Juan';
+  b.setAttribute('aria-label', can ? 'Cambiar el nombre del grupo' : (name || 'Medio maratón, San Juan'));
+}
+function rowHTML(r, C, fin) {
+  const w = C.wep[r.id] || 0, on = C.mine.has(r.id), can = canWriteUI();
+  const bd = (C.badges[r.id] || []).filter((x) => x[0] !== '🏅').slice(0, 5).map((x) => `<span title="${esc(x[1])}">${x[0]}</span>`).join('');
+  const extra = (r.bib ? `<span class="bibn">#${esc(r.bib)}</span>` : '') + (r.wave ? `<span class="bibn">${esc(WAVES[r.wave])}</span>` : '');
+  const main = fin ? fmtT(r.time) : (r.goal > 0 ? fmtT(r.goal) : '—');
+  const sub = fin ? `${fmtPace(r.time)} /km` : (r.goal > 0 ? 'pronóstico' : 'sin pronóstico');
+  return `<li class="lrow"><button type="button" class="lmain" data-open="${esc(r.id)}">` +
+    `<span class="rk">${fin ? C.rank[r.id] : ''}</span>${avatar(r)}` +
+    `<span class="who"><span class="nm">${esc(r.name)}${r.owner && r.owner === S.me.key ? '<em class="you">tú</em>' : ''}</span><span class="bd">${bd}${extra}</span></span>` +
+    `<span class="tm"><b class="${fin ? '' : 'dim'}">${main}</b><small>${sub}</small></span></button>` +
+    `<button type="button" class="wepa${on ? ' on' : ''}" data-wepa="${esc(r.id)}" aria-pressed="${on}"${can ? '' : ' disabled'} aria-label="¡Wepa! para ${esc(r.name)}, ${w}"><b>${w}</b><span>¡Wepa!</span></button></li>`;
+}
+function renderGrupo() {
+  const C = S.C, can = canWriteUI(), mine = myRunners();
+  const add = $('#addBtn');
+  add.hidden = !can;
+  add.textContent = mine.length ? '+ Añadir otro corredor' : '+ Añadir mis stats';
+  $('#editMine').hidden = !(can && mine.length === 1);
+
+  let msg = '';
+  if (!S.db && S.conn === 'off') msg = 'Para ver y añadir los stats del grupo, abre este tablero en Claude con tu cuenta. La pestaña Carrera funciona igual.';
+  else if (S.conn === 'off') msg = 'Se perdió el acceso a los datos del grupo. Recarga la página.';
+  else if (S.conn === 'error') msg = 'No se pudieron cargar los datos del grupo. Recarga la página para intentarlo otra vez.';
+  else if (S.conn === 'slow') msg = 'Todavía no conecta con los datos del grupo. Lo que ves puede estar desactualizado.';
+  else if (S.write === 'no') msg = 'Puedes ver el tablero. ' + readOnlyMsg();
+  const note = $('#connNote');
+  note.hidden = !msg;
+  note.textContent = msg;
+  $('#ownerTip').hidden = !(S.me.isOwner && ls.get('wepa21k.tipok') !== '1');
+
+  const tiles = $('#tiles');
+  if (S.runners.length) {
+    const nf = new Intl.NumberFormat('es-PR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const avg = C.fin.length ? C.fin.reduce((a, r) => a + r.time, 0) / C.fin.length : null;
+    tiles.innerHTML = [
+      [S.runners.length, 'Corredores'],
+      [C.fin.length, 'Terminaron'],
+      [nf.format(C.fin.length * 21.1), 'Km del grupo'],
+      [avg ? fmtPace(avg) : '—', 'Ritmo promedio /km']
+    ].map(([v, l]) => `<div class="tile"><b>${esc(v)}</b><span>${l}</span></div>`).join('');
+    tiles.hidden = false;
+  } else tiles.hidden = true;
+
+  const top = C.fin.slice(0, 3);
+  $('#podium').innerHTML = top.length ? `<div class="podium">${top.map((r, i) => `<button type="button" class="pod p${i + 1}" data-open="${esc(r.id)}">${avatar(r, 'big')}<span class="pn">${esc(r.name)}</span><span class="pt">${fmtT(r.time)}</span><span class="step">${C.rank[r.id]}</span></button>`).join('')}</div>` : '';
+
+  let h = '';
+  if (!S.runners.length) {
+    if (S.conn === 'loading') h = '<div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando el grupo…</p></div>';
+    else if (S.db && S.conn !== 'off') h = `<div class="empty"><b>Todavía no hay nadie</b><p>Añade tu nombre y tu pronóstico hoy. Después de la meta, pon tu tiempo oficial y sube tus fotos.</p>${can ? '<button type="button" class="btn primary" data-act="add">+ Añadir mis stats</button>' : ''}</div>`;
+  } else {
+    if (C.fin.length) h += `<h3 class="subh">Clasificación del grupo</h3><ol class="lb">${C.fin.map((r) => rowHTML(r, C, true)).join('')}</ol>`;
+    if (C.pend.length) h += `<h3 class="subh">${C.fin.length ? 'Esperando su tiempo' : 'En la línea de salida'}</h3><ul class="lb">${C.pend.map((r) => rowHTML(r, C, false)).join('')}</ul>`;
+  }
+  $('#board').innerHTML = h;
+}
+function oRow(r, C, scale) {
+  const d = r.time - r.goal, win = C.oracle.has(r.id);
+  const w = Math.min(50, (Math.abs(d) / scale) * 50);
+  const left = d < 0 ? 50 - w : 50;
+  const verdict = Math.round(d) === 0 ? 'exacto' : d < 0 ? 'más rápido' : 'más lento';
+  return `<li class="orow${win ? ' win' : ''}"><button type="button" class="obtn" data-open="${esc(r.id)}">` +
+    `<span class="o-top"><span class="nm">${win ? '🔮 ' : ''}${esc(r.name)}</span><span class="o-res"><b>${fmtDiff(d)}</b> ${verdict}</span></span>` +
+    `<span class="o-nums"><span>Pronóstico <b>${fmtT(r.goal)}</b></span><span>Oficial <b>${fmtT(r.time)}</b></span></span>` +
+    `<span class="dbar" aria-hidden="true"><i class="mid"></i><i class="bar ${d < 0 ? 'fast' : 'slow'}" style="left:${left.toFixed(2)}%;width:${Math.max(w, 0.8).toFixed(2)}%"></i></span>` +
+    `</button></li>`;
+}
+function renderOracle() {
+  const C = S.C, el = $('#oracle'), can = canWriteUI();
+  $('#goalBtn').hidden = !can;
+  if (!S.runners.length && (S.conn === 'loading' || !S.db)) {
+    el.innerHTML = S.conn === 'loading' ? '<div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando pronósticos…</p></div>' : '<div class="empty"><b>Sin conexión</b><p>Abre este tablero en Claude con tu cuenta para ver los pronósticos.</p></div>';
+    return;
+  }
+  const all = S.runners.filter((r) => r.goal > 0);
+  if (!all.length) {
+    el.innerHTML = `<div class="empty"><b>Nadie ha puesto su pronóstico</b><p>${Date.now() < START ? 'Tienes hasta las 4:00 a.m. para que cuente.' : 'Los pronósticos puestos después de la salida no cuentan para el Oráculo.'}</p>${can ? '<button type="button" class="btn primary" data-act="add-goal">+ Mi pronóstico</button>' : ''}</div>`;
+    return;
+  }
+  const done = all.filter((r) => r.time > 0 && !isLate(r)).sort((a, b) => Math.abs(a.time - a.goal) - Math.abs(b.time - b.goal) || a.time - b.time);
+  const wait = all.filter((r) => !(r.time > 0) && !isLate(r)).sort((a, b) => a.goal - b.goal || nameCmp(a, b));
+  const late = all.filter(isLate);
+  const scale = Math.max(120, ...done.map((r) => Math.abs(r.time - r.goal)));
+  let h = '';
+  if (done.length) {
+    h += `<h3 class="subh">Pronóstico contra tiempo oficial</h3><ol class="olist">${done.map((r) => oRow(r, C, scale)).join('')}</ol>`;
+    h += '<p class="fine" style="margin-top:8px">La barra sale desde tu pronóstico: a la izquierda si llegaste antes, a la derecha si llegaste después.</p>';
+  }
+  if (wait.length) {
+    h += `<h3 class="subh">${done.length ? 'Pendientes' : 'Pronósticos del grupo'}</h3><ul class="lb">${wait.map((r) => `<li class="lrow"><button type="button" class="lmain nork" data-open="${esc(r.id)}">${avatar(r)}<span class="who"><span class="nm">${esc(r.name)}${r.owner && r.owner === S.me.key ? '<em class="you">tú</em>' : ''}</span><span class="bd">Ritmo meta ${fmtPace(r.goal)} /km</span></span><span class="tm"><b>${fmtT(r.goal)}</b></span></button></li>`).join('')}</ul>`;
+  }
+  if (late.length) h += `<h3 class="subh">No cuentan para el Oráculo</h3><p class="fine">Pronósticos puestos o cambiados después de la salida: ${late.map((r) => esc(r.name)).join(', ')}.</p>`;
+  el.innerHTML = h;
+}
+function renderAlbum() {
+  const el = $('#album');
+  $('#photoBtn').hidden = !(canWriteUI() && S.assets);
+  const items = [];
+  for (const r of S.runners) for (const id of r.photos) items.push({ id, r });
+  items.sort((a, b) => (b.r.updatedAt || 0) - (a.r.updatedAt || 0));
+  if (!items.length) {
+    el.classList.add('is-empty');
+    if (S.conn === 'loading' && !S.runners.length) { el.innerHTML = '<div class="empty"><span class="spin" aria-hidden="true"></span><p>Cargando fotos…</p></div>'; return; }
+    el.innerHTML = `<div class="empty"><b>Todavía no hay fotos</b><p>${S.assets ? 'Toca «+ Subir fotos» y elige de quién son. Caben hasta 4 por corredor.' : 'Cuando el grupo suba fotos, salen aquí.'}</p></div>`;
+    return;
+  }
+  el.classList.remove('is-empty');
+  el.innerHTML = items.map(({ id, r }) => `<button type="button" class="ph-cell" data-photo="${esc(id)}" data-rid="${esc(r.id)}"><img class="ph" src="${blobUrl(id)}" alt="Foto de ${esc(r.name)}" loading="lazy"><span class="cap">${esc(r.name)}</span></button>`).join('');
+}
+
+/* ---------- runner detail ---------- */
+function openRunner(rid) {
+  if (!getR(rid)) return;
+  S.openRid = rid;
+  S.delAsk = null;
+  renderRunner();
+  if (!dlgRunner.open) dlgRunner.showModal();
+  $('#rBody').scrollTop = 0;
+}
+function renderRunner() {
+  const r = getR(S.openRid);
+  if (!r) { if (dlgRunner.open) dlgRunner.close(); return; }
+  const C = S.C, fin = r.time > 0, can = canWriteUI();
+  const w = C.wep[r.id] || 0, on = C.mine.has(r.id);
+  $('#rTitle').textContent = fin ? `${C.rank[r.id]}.º del grupo` : (r.goal > 0 ? 'En la línea de salida' : 'Corredor');
+  const cells = [];
+  if (fin) {
+    cells.push(['Tiempo oficial', fmtT(r.time)]);
+    cells.push(['Ritmo', `${fmtPace(r.time)} /km`]);
+    cells.push(['Ritmo en millas', `${fmtPace(r.time, MI)} /mi`]);
+  }
+  if (r.goal > 0) cells.push(['Pronóstico', fmtT(r.goal) + (fin ? ` (${fmtDiff(r.time - r.goal)})` : ` · ${fmtPace(r.goal)} /km`)]);
+  if (r.half > 0) {
+    cells.push(['Primera mitad', fmtT(r.half)]);
+    if (fin && r.half < r.time) cells.push(['Segunda mitad', fmtT(r.time - r.half)]);
+  }
+  if (r.hr) cells.push(['FC promedio', `${r.hr} lpm`]);
+  if (r.cadence) cells.push(['Cadencia', `${r.cadence} ppm`]);
+  if (r.place) cells.push(['Posición general', `#${r.place}`]);
+  if (fin && C.fin.length > 1) cells.push(['En el grupo', `${C.rank[r.id]}.º de ${C.fin.length}`]);
+  const feel = FEEL.find((f) => f[0] === r.feel);
+  const badges = C.badges[r.id] || [];
+  $('#rBody').innerHTML =
+    `<div class="bibcard"><span class="band"></span><i class="pin a"></i><i class="pin b"></i><i class="pin c"></i><i class="pin d"></i>` +
+    `<div class="bib-top"><span>21.1 km · San Juan</span><span>${r.wave ? esc(WAVES[r.wave]) : '8 nov 2026'}</span></div>` +
+    `<div class="bib-num">${esc(r.bib || '21K')}</div><div class="bib-name">${esc(r.name)}</div></div>` +
+    (r.note ? `<p class="quote">«${esc(r.note)}»</p>` : '') +
+    (cells.length ? `<div class="sgrid">${cells.map(([l, v]) => `<div><span>${l}</span><b>${esc(v)}</b></div>`).join('')}</div>` : `<p class="fine" style="margin-top:14px">Todavía no hay resultados.${can ? ' Toca «Editar» para añadirlos después de la meta.' : ''}</p>`) +
+    (feel ? `<p class="feelline">Sensación: ${feel[1]} ${feel[2]}</p>` : '') +
+    (badges.length ? `<div class="blist">${badges.map((b) => `<span class="bchip">${b[0]} ${esc(b[1])}</span>`).join('')}</div>` : '') +
+    (r.photos.length ? `<div class="rphotos">${r.photos.map((id) => `<button type="button" class="ph-cell" data-photo="${esc(id)}" data-rid="${esc(r.id)}"><img class="ph" src="${blobUrl(id)}" alt="Foto de ${esc(r.name)}" loading="lazy"></button>`).join('')}</div>` : '') +
+    (!can ? '' : S.delAsk === r.id
+      ? `<div class="del-zone"><p class="confirm">¿Eliminar a ${esc(r.name)} con sus fotos? No se puede deshacer.</p><button type="button" class="btn ghost" data-del-no>Cancelar</button><button type="button" class="btn primary" data-del-yes="${esc(r.id)}">Eliminar</button></div>`
+      : `<div class="del-zone"><button type="button" class="btn ghost small danger" data-del="${esc(r.id)}">Eliminar corredor</button></div>`);
+  $('#rFoot').innerHTML = `<button type="button" class="btn wepa-btn${on ? ' on' : ''}" data-wepa="${esc(r.id)}" aria-pressed="${on}"${can ? '' : ' disabled'}>¡Wepa! <b>${w}</b></button>` +
+    `<button type="button" class="btn" data-card="${esc(r.id)}">Crear tarjeta</button>` +
+    (can ? `<button type="button" class="btn" data-edit="${esc(r.id)}">Editar</button>` : '');
+}
+async function toggleWepa(rid) {
+  if (!canWriteUI()) { toast(readOnlyMsg()); return; }
+  if (!S.me.key || !getR(rid)) return;
+  const id = `${rid}~${S.me.key}`;
+  if (S.busy.has(id)) return;
+  S.busy.add(id);
+  const has = S.reactions.some((x) => x.id === id);
+  try {
+    if (has) await withRetry(() => S.db.doc('reactions/' + id).delete());
+    else await withRetry(() => S.db.doc('reactions/' + id).set({ r: rid, by: S.me.key, at: Date.now() }));
+  } catch (e) { handleWriteError(e); }
+  finally { S.busy.delete(id); }
+}
+async function deleteRunner(rid) {
+  const r = getR(rid);
+  if (!r) return;
+  try { await withRetry(() => S.db.doc('runners/' + rid).delete()); }
+  catch (e) { handleWriteError(e); return; }
+  S.delAsk = null;
+  if (dlgRunner.open) dlgRunner.close();
+  toast(`${r.name} salió del tablero`);
+  for (const x of S.reactions.filter((y) => y.r === rid)) { try { await S.db.doc('reactions/' + x.id).delete(); } catch (e) {} }
+  if (S.assets) for (const id of r.photos) { try { await S.assets.delete(id); } catch (e) {} }
+}
+
+/* ---------- form ---------- */
+function renderFeel() {
+  const v = S.form ? S.form.feel : null;
+  $('#fFeel').innerHTML = FEEL.map(([n, e, l]) => `<button type="button" data-feel="${n}" aria-pressed="${v === n}"><span>${e}</span>${l}</button>`).join('');
+}
+function hint(inp, out, base, dist) {
+  const v = parseT(inp.value);
+  if (v === null) { out.textContent = base; out.className = 'hint'; }
+  else if (Number.isNaN(v)) { out.textContent = 'Usa h:mm:ss, por ejemplo 1:58:34.'; out.className = 'hint bad'; }
+  else { out.textContent = `= ${spoken(v)} · ${fmtPace(v, dist)} /km`; out.className = 'hint ok'; }
+}
+function updateHints() {
+  hint($('#fGoal'), $('#hGoal'), Date.now() < START ? 'Formato h:mm:ss. Cuenta para el Oráculo si lo guardas antes de las 4:00 a.m.' : 'Ya salió la carrera: un pronóstico nuevo o cambiado no cuenta para el Oráculo.', KM);
+  hint($('#fTime'), $('#hTime'), 'El tiempo de chip de los resultados oficiales.', KM);
+  hint($('#fHalf'), $('#hHalf'), 'Opcional. Da el logro de split negativo.', KM / 2);
+}
+function renderFormPhotos() {
+  const F = S.form;
+  if (!F) return;
+  const up = !!S.assets;
+  let h = F.photos.map((id) => `<div class="fph"><img class="ph" src="${blobUrl(id)}" alt=""><button type="button" class="rm" data-rmph="${esc(id)}" aria-label="Quitar foto">×</button></div>`).join('');
+  for (let i = 0; i < F.pending; i++) h += '<div class="fph loading"><span class="spin" role="img" aria-label="Subiendo foto"></span></div>';
+  if (up && F.photos.length + F.pending < MAX_PH) h += '<button type="button" class="fph add" id="fAddPh">+ Foto</button>';
+  $('#fPhotos').innerHTML = h;
+  $('#fPhotoNote').textContent = up ? 'Las fotos quedan en el tablero cuando tocas Guardar. Las ve todo el que tenga acceso.' : 'Para subir fotos necesitas permiso para editar este tablero.';
+}
+function openForm(rid, opts) {
+  if (!canWriteUI()) { toast(readOnlyMsg()); return; }
+  const r = rid ? getR(rid) : null;
+  S.form = { id: r ? r.id : null, photos: r ? r.photos.slice() : [], uploaded: new Set(), removed: new Set(), pending: 0, feel: r ? r.feel : null, saving: false, saved: false };
+  $('#fTitle').textContent = r ? 'Editar corredor' : 'Añadir corredor';
+  $('#fName').value = r ? r.name : '';
+  $('#fBib').value = r ? r.bib : '';
+  $('#fWave').value = r ? r.wave : '';
+  $('#fGoal').value = r && r.goal > 0 ? fmtT(r.goal) : '';
+  $('#fTime').value = r && r.time > 0 ? fmtT(r.time) : '';
+  $('#fHalf').value = r && r.half > 0 ? fmtT(r.half) : '';
+  $('#fPlace').value = r && r.place ? r.place : '';
+  $('#fHr').value = r && r.hr ? r.hr : '';
+  $('#fCad').value = r && r.cadence ? r.cadence : '';
+  $('#fDebut').checked = !!(r && r.debut);
+  $('#fFull').checked = !!(r && r.full);
+  $('#fPr').checked = !!(r && r.pr);
+  $('#fNote').value = r ? r.note : '';
+  $('#fErr').hidden = true;
+  const save = $('#fSave');
+  save.disabled = false;
+  save.textContent = 'Guardar';
+  renderFeel();
+  renderFormPhotos();
+  updateHints();
+  if (!dlgForm.open) dlgForm.showModal();
+  $('#dlgForm .sheet-b').scrollTop = 0;
+  if (opts && opts.focus) {
+    const el = $(opts.focus);
+    if (el) setTimeout(() => { el.scrollIntoView({ block: 'center' }); el.focus({ preventScroll: true }); }, 60);
+  }
+}
+function showFormErr(msg) {
+  const e = $('#fErr');
+  e.textContent = msg;
+  e.hidden = false;
+  e.scrollIntoView({ block: 'nearest' });
+}
+async function saveForm(ev) {
+  ev.preventDefault();
+  const F = S.form;
+  if (!F || F.saving) return;
+  const errs = [];
+  const name = $('#fName').value.trim().replace(/\s+/g, ' ').slice(0, 40);
+  if (!name) errs.push('Escribe un nombre o apodo.');
+  const goal = parseT($('#fGoal').value), time = parseT($('#fTime').value), half = parseT($('#fHalf').value);
+  const inRange = (v) => v === null || (!Number.isNaN(v) && v >= 1800 && v <= 21600);
+  if (!inRange(goal)) errs.push('Revisa el pronóstico: usa h:mm:ss, por ejemplo 2:05:00.');
+  if (!inRange(time)) errs.push('Revisa el tiempo oficial: usa h:mm:ss, por ejemplo 1:58:34.');
+  if (half !== null && (Number.isNaN(half) || half < 600 || (isNum(time) && half >= time))) errs.push('El tiempo a mitad tiene que ser menor que el tiempo oficial.');
+  const num = (sel, lo, hi, label) => {
+    const t = $(sel).value.trim();
+    if (!t) return null;
+    const n = Number(t);
+    if (!Number.isFinite(n) || n < lo || n > hi) { errs.push(`Revisa ${label}.`); return null; }
+    return Math.round(n);
+  };
+  const place = num('#fPlace', 1, 50000, 'la posición general');
+  const hr = num('#fHr', 60, 230, 'la frecuencia cardiaca');
+  const cad = num('#fCad', 100, 240, 'la cadencia');
+  if (F.pending > 0) errs.push('Espera a que terminen de subir las fotos.');
+  if (errs.length) { showFormErr(errs.join(' ')); return; }
+
+  const prev = F.id ? getR(F.id) : null;
+  const now = Date.now();
+  const prevGoal = prev && prev.goal > 0 ? prev.goal : null;
+  const wave = $('#fWave').value;
+  const data = {
+    name,
+    bib: $('#fBib').value.replace(/\D/g, '').slice(0, 6),
+    wave: Object.prototype.hasOwnProperty.call(WAVES, wave) ? wave : '',
+    goal: isNum(goal) ? goal : null,
+    goalAt: !isNum(goal) ? null : (goal !== prevGoal ? now : (prev && isNum(prev.goalAt) ? prev.goalAt : now)),
+    time: isNum(time) ? time : null,
+    half: isNum(half) ? half : null,
+    place, hr, cadence: cad,
+    debut: $('#fDebut').checked, full: $('#fFull').checked, pr: $('#fPr').checked,
+    feel: isNum(F.feel) ? F.feel : null,
+    note: $('#fNote').value.trim().slice(0, 140),
+    photos: F.photos.filter(okId).slice(0, MAX_PH),
+    owner: prev && prev.owner ? prev.owner : S.me.key,
+    createdAt: prev && prev.createdAt ? prev.createdAt : now,
+    updatedAt: now
+  };
+  F.saving = true;
+  const btn = $('#fSave');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+  try {
+    const ref = F.id ? S.db.doc('runners/' + F.id) : S.db.collection('runners').doc();
+    await withRetry(() => ref.set(data));
+    F.saved = true;
+    const removed = Array.from(F.removed);
+    dlgForm.close();
+    toast(F.id ? 'Cambios guardados. El grupo ya los ve.' : '¡Listo! Ya estás en el tablero y el grupo te ve.');
+    if (S.assets) for (const id of removed) { try { await S.assets.delete(id); } catch (e) {} }
+  } catch (e) {
+    F.saving = false;
+    btn.disabled = false;
+    btn.textContent = 'Guardar';
+    showFormErr(handleWriteError(e));
+  }
+}
+function removeFormPhoto(id) {
+  const F = S.form;
+  if (!F) return;
+  F.photos = F.photos.filter((x) => x !== id);
+  if (F.uploaded.has(id)) { F.uploaded.delete(id); if (S.assets) S.assets.delete(id).catch(() => {}); }
+  else F.removed.add(id);
+  renderFormPhotos();
+}
+function decodeImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => { URL.revokeObjectURL(url); res(im); };
+    im.onerror = () => { URL.revokeObjectURL(url); rej({ code: 'decode' }); };
+    im.src = url;
+  });
+}
+async function shrink(file, max = 1600, q = 0.85) {
+  let src;
+  try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch (e) { src = await decodeImage(file); }
+  const w = src.width, h = src.height;
+  if (!w || !h) throw { code: 'decode' };
+  const s = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas');
+  c.width = Math.round(w * s);
+  c.height = Math.round(h * s);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  if (src.close) try { src.close(); } catch (e) {}
+  return await new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej({ code: 'decode' })), 'image/jpeg', q));
+}
+function upMsg(e) {
+  const c = e && e.code;
+  if (c === 'too_large') return 'Esa foto pesa demasiado.';
+  if (c === 'unsupported_type' || c === 'decode') return 'No se pudo leer esa foto. Prueba con una JPG o PNG.';
+  if (c === 'quota_or_state') return 'El tablero no tiene más espacio para fotos.';
+  if (c === 'rate_limited') return 'Muchas fotos seguidas. Espera un momento y prueba otra vez.';
+  if (c === 'upstream_auth') return 'Vuelve a entrar a tu cuenta y prueba otra vez.';
+  if (c === 'not_granted' || c === 'capability_disabled') return 'Para subir fotos necesitas permiso de Editor en este tablero.';
+  return 'No se pudo subir la foto. Prueba otra vez.';
+}
+async function onFiles(files) {
+  const F = S.form;
+  if (!F || !S.assets) return;
+  const room = MAX_PH - F.photos.length - F.pending;
+  const list = files.filter((f) => /^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name)).slice(0, Math.max(0, room));
+  if (files.length > list.length) toast(room <= 0 ? 'Ya tienes 4 fotos. Quita una para subir otra.' : `Caben ${room} foto${room === 1 ? '' : 's'} más.`);
+  if (!list.length) return;
+  F.pending += list.length;
+  renderFormPhotos();
+  for (const f of list) {
+    try {
+      const blob = await shrink(f);
+      let res;
+      try { res = await S.assets.upload(blob, { type: 'image/jpeg' }); }
+      catch (e) {
+        if (e && e.code === 'store_unavailable') { await sleep(900); res = await S.assets.upload(blob, { type: 'image/jpeg' }); }
+        else throw e;
+      }
+      if (S.form !== F) { try { await S.assets.delete(res.id); } catch (e) {} continue; }
+      if (okId(res.id)) { F.photos.push(res.id); F.uploaded.add(res.id); }
+    } catch (e) {
+      toast(upMsg(e));
+    } finally {
+      F.pending = Math.max(0, F.pending - 1);
+      if (S.form === F) renderFormPhotos();
+    }
+  }
+}
+
+/* ---------- group name ---------- */
+function openName() {
+  if (!canWriteUI()) return;
+  $('#gName').value = S.board.name || '';
+  dlgName.showModal();
+}
+async function saveName(ev) {
+  ev.preventDefault();
+  const v = $('#gName').value.trim().replace(/\s+/g, ' ').slice(0, 32);
+  try {
+    await withRetry(() => S.db.doc('meta/board').set({ name: v, updatedAt: Date.now() }));
+    dlgName.close();
+    toast(v ? 'Nombre guardado' : 'Nombre borrado');
+  } catch (e) { handleWriteError(e); }
+}
+
+/* ---------- photo picker + viewer ---------- */
+function renderPick() {
+  const rs = S.runners.slice().sort(nameCmp);
+  $('#pickList').innerHTML = `<ul class="picklist">${rs.map((r) => {
+    const n = r.photos.length;
+    return `<li><button type="button" class="pickrow" data-pick="${esc(r.id)}"${n >= MAX_PH ? ' disabled' : ''}>${avatar(r)}<span class="nm">${esc(r.name)}</span><small>${n} de ${MAX_PH}</small></button></li>`;
+  }).join('')}<li><button type="button" class="pickrow new" data-pick="">+ Corredor nuevo</button></li></ul>`;
+}
+function openPhoto(id, rid) {
+  const r = getR(rid);
+  S.photo = { id, rid };
+  $('#pTitle').textContent = r ? r.name : 'Foto';
+  const img = $('#pImg');
+  img.classList.remove('broken');
+  img.src = blobUrl(id);
+  img.alt = r ? `Foto de ${r.name}` : 'Foto';
+  $('#pRunner').hidden = !r;
+  $('#pCard').hidden = !r;
+  if (!dlgPhoto.open) dlgPhoto.showModal();
+}
+function showImageFallback(blob) {
+  if (S.fallbackUrl) URL.revokeObjectURL(S.fallbackUrl);
+  S.fallbackUrl = URL.createObjectURL(blob);
+  S.photo = null;
+  $('#pTitle').textContent = 'Mantén presionada la imagen para guardarla';
+  const img = $('#pImg');
+  img.classList.remove('broken');
+  img.src = S.fallbackUrl;
+  img.alt = 'Tarjeta para compartir';
+  $('#pRunner').hidden = true;
+  $('#pCard').hidden = true;
+  if (!dlgPhoto.open) dlgPhoto.showModal();
+}
+
+/* ---------- downloads ---------- */
+async function saveFile(filename, blob) {
+  if (!S.downloads) return 'unavailable';
+  try {
+    const res = await S.downloads.save({ filename, data: blob });
+    toast(res && res.status === 'delivered' ? 'Enviado' : 'Guardado');
+    return 'saved';
+  } catch (e) {
+    const c = e && e.code;
+    if (c === 'declined') { toast('Descarga cancelada'); return 'declined'; }
+    if (c === 'rate_limited') { toast('Ya hay una descarga abierta. Termina esa primero.'); return 'declined'; }
+    if (c === 'too_large') { toast('El archivo pesa demasiado para guardarlo aquí.'); return 'declined'; }
+    return 'unavailable';
+  }
+}
+async function exportCSV() {
+  const C = S.C;
+  if (!S.runners.length) { toast('Todavía no hay datos para descargar.'); return; }
+  const safe = (v) => { const s = String(v == null ? '' : v); return /^[=+\-@]/.test(s) ? "'" + s : s; };
+  const rows = [['Lugar', 'Nombre', 'BIB', 'Wave', 'Tiempo oficial', 'Ritmo /km', 'Ritmo /mi', 'Pronóstico', 'Diferencia', 'Primera mitad', 'FC promedio', 'Cadencia', 'Posición general', 'Primer 21K', 'PR', 'Full Challenge', '¡Wepa!', 'Logros', 'Frase']];
+  for (const r of C.fin.concat(C.pend)) {
+    const fin = r.time > 0;
+    rows.push([
+      C.rank[r.id] || '', safe(r.name), r.bib, WAVES[r.wave] || '',
+      fin ? fmtT(r.time) : '', fin ? fmtPace(r.time) : '', fin ? fmtPace(r.time, MI) : '',
+      r.goal > 0 ? fmtT(r.goal) : '', fin && r.goal > 0 ? fmtDiff(r.time - r.goal).replace('−', '-') : '',
+      r.half > 0 ? fmtT(r.half) : '', r.hr || '', r.cadence || '', r.place || '',
+      r.debut ? 'Sí' : '', r.pr ? 'Sí' : '', r.full ? 'Sí' : '', C.wep[r.id] || 0,
+      (C.badges[r.id] || []).map((b) => b[1]).join(' / '), safe(r.note)
+    ]);
+  }
+  const csv = '﻿' + rows.map((row) => row.map((v) => { const s = String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; }).join(',')).join('\r\n');
+  const out = await saveFile('resultados-wepa-21k.csv', new Blob([csv], { type: 'text/csv' }));
+  if (out === 'unavailable') {
+    try { await navigator.clipboard.writeText(csv); toast('Copiado. Pégalo en una hoja de cálculo.'); }
+    catch (e) { toast('Aquí no se puede descargar. Ábrelo en Claude para guardar el CSV.'); }
+  }
+}
+
+/* ---------- finisher card ---------- */
+let fontsReady = null;
+function ensureFonts() {
+  if (!fontsReady) {
+    const specs = [`900 100px ${FD}`, `800 100px ${FD}`, `400 30px ${FM}`, `600 30px ${FM}`, `700 30px ${FB}`];
+    fontsReady = (document.fonts && document.fonts.load)
+      ? Promise.all(specs.map((f) => document.fonts.load(f).catch(() => null))).catch(() => null)
+      : Promise.resolve();
+  }
+  return fontsReady;
+}
+const imgCache = new Map();
+function loadImg(src) {
+  if (imgCache.has(src)) return imgCache.get(src);
+  const p = new Promise((res, rej) => {
+    const im = new Image();
+    im.decoding = 'async';
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error('img'));
+    im.src = src;
+  });
+  imgCache.set(src, p);
+  p.catch(() => imgCache.delete(src));
+  return p;
+}
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function fit(ctx, text, weight, fam, max, min, maxW) {
+  let s = max;
+  ctx.font = `${weight} ${s}px ${fam}`;
+  while (s > min && ctx.measureText(text).width > maxW) { s -= 2; ctx.font = `${weight} ${s}px ${fam}`; }
+  return s;
+}
+function cover(ctx, img, W, H) {
+  const s = Math.max(W / img.width, H / img.height);
+  const w = img.width * s, h = img.height * s;
+  ctx.drawImage(img, (W - w) / 2, (H - h) * 0.35, w, h);
+}
+function cardData(r) {
+  const C = S.C, fin = r.time > 0;
+  const stats = [];
+  if (fin) {
+    stats.push(['RITMO', `${fmtPace(r.time)} /km`]);
+    if (r.place) stats.push(['GENERAL', `#${r.place}`]);
+    if (r.hr) stats.push(['FC PROM.', `${r.hr} lpm`]);
+    if (C.fin.length > 1) stats.push(['EN EL GRUPO', `${C.rank[r.id]}.º de ${C.fin.length}`]);
+    if (r.cadence) stats.push(['CADENCIA', `${r.cadence} ppm`]);
+    if (r.bib) stats.push(['BIB', r.bib]);
+    stats.push(['RITMO /MI', fmtPace(r.time, MI)]);
+    stats.push(['DISTANCIA', '21.1 km']);
+  } else {
+    if (r.goal > 0) stats.push(['RITMO META', `${fmtPace(r.goal)} /km`]);
+    if (r.bib) stats.push(['BIB', r.bib]);
+    if (r.wave) stats.push(['WAVE', r.wave === 'A' ? 'Adapt.' : r.wave]);
+    stats.push(['SALIDA', '4:00 a.m.']);
+    stats.push(['DISTANCIA', '21.1 km']);
+  }
+  return {
+    fin,
+    stats: stats.slice(0, 3),
+    badges: (C.badges[r.id] || []).filter((b) => b[0] !== '🏅').slice(0, 3),
+    big: fin ? fmtT(r.time) : (r.goal > 0 ? fmtT(r.goal) : '21.1'),
+    bigLabel: fin ? 'TIEMPO OFICIAL' : (r.goal > 0 ? 'MI PRONÓSTICO' : 'KILÓMETROS'),
+    pill: fin ? 'FINISHER · 21.1 KM' : 'RUMBO AL 21K',
+    name: (r.name || 'Corredor').toUpperCase(),
+    group: (S.board.name || '').trim()
+  };
+}
+function drawPhotoCard(ctx, W, H, img, d) {
+  const M = 72, WHITE = '#FFFFFF', SOFT = 'rgba(255,255,255,0.8)', FLAME = '#FF6B4F';
+  ctx.clearRect(0, 0, W, H);
+  if (img) {
+    cover(ctx, img, W, H);
+    let g = ctx.createLinearGradient(0, 0, 0, H * 0.22);
+    g.addColorStop(0, 'rgba(5,9,16,0.6)'); g.addColorStop(1, 'rgba(5,9,16,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * 0.22);
+    g = ctx.createLinearGradient(0, H * 0.3, 0, H);
+    g.addColorStop(0, 'rgba(5,9,16,0)'); g.addColorStop(0.5, 'rgba(5,9,16,0.66)'); g.addColorStop(1, 'rgba(5,9,16,0.95)');
+    ctx.fillStyle = g; ctx.fillRect(0, H * 0.3, W, H * 0.7);
+  } else {
+    let g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#081120'); g.addColorStop(0.6, '#13213A'); g.addColorStop(1, '#25182E');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    const rg = ctx.createRadialGradient(W * 0.5, H * 1.05, 10, W * 0.5, H * 1.05, W);
+    rg.addColorStop(0, 'rgba(255,138,76,0.95)'); rg.addColorStop(0.4, 'rgba(226,72,44,0.45)'); rg.addColorStop(1, 'rgba(226,72,44,0)');
+    ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    ctx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 80; i++) {
+      const x = rnd() * W, y = rnd() * H * 0.5, rad = rnd() * 2.2 + 0.6;
+      ctx.globalAlpha = 0.25 + rnd() * 0.6;
+      ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    const fs = Math.round(W * 0.5);
+    ctx.save();
+    ctx.font = `900 ${fs}px ${FD}`;
+    ctx.textAlign = 'center';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255,255,255,0.11)';
+    ctx.strokeText('21.1', W / 2, H * 0.36 + fs * 0.35);
+    ctx.restore();
+  }
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = SOFT;
+  ctx.font = `600 26px ${FM}`;
+  ctx.textAlign = 'left'; ctx.fillText('MEDIO MARATÓN · SAN JUAN, PR', M, M + 22);
+  ctx.textAlign = 'right'; ctx.fillText('08·11·26', W - M, M + 22);
+
+  let y = H - M;
+  ctx.font = `400 24px ${FM}`;
+  ctx.fillStyle = SOFT;
+  ctx.textAlign = 'left'; ctx.fillText(d.group ? d.group.toUpperCase() : 'WEPA 21K', M, y);
+  if (d.group) { ctx.textAlign = 'right'; ctx.fillText('WEPA 21K', W - M, y); }
+  y -= 46;
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fillRect(M, y, W - 2 * M, 2);
+  y -= 40;
+  const colW = (W - 2 * M) / 3;
+  ctx.textAlign = 'left';
+  d.stats.forEach((s, i) => {
+    const x = M + i * colW;
+    ctx.fillStyle = WHITE;
+    fit(ctx, s[1], 800, FD, 64, 34, colW - 18);
+    ctx.fillText(s[1], x, y);
+    ctx.fillStyle = SOFT;
+    ctx.font = `600 22px ${FM}`;
+    ctx.fillText(s[0], x, y - 70);
+  });
+  y -= 140;
+  const bs = fit(ctx, d.big, 900, FD, H > 1500 ? 280 : 230, 120, W - 2 * M);
+  ctx.fillStyle = WHITE;
+  ctx.fillText(d.big, M - 6, y);
+  y -= Math.round(bs * 0.74) + 34;
+  ctx.font = `600 26px ${FM}`;
+  ctx.fillStyle = FLAME;
+  ctx.fillText(d.bigLabel, M, y);
+  y -= 58;
+  const ns = fit(ctx, d.name, 800, FD, 120, 54, W - 2 * M);
+  ctx.fillStyle = WHITE;
+  ctx.fillText(d.name, M - 3, y);
+  y -= Math.round(ns * 0.74) + 34;
+  const ch = 54;
+  let x = M;
+  ctx.font = `600 24px ${FM}`;
+  const pw = ctx.measureText(d.pill).width + 40;
+  ctx.fillStyle = FLAME; rr(ctx, x, y - ch, pw, ch, 27); ctx.fill();
+  ctx.fillStyle = '#1B0A06'; ctx.fillText(d.pill, x + 20, y - ch / 2 + 9);
+  x += pw + 12;
+  ctx.font = `700 25px ${FB}`;
+  for (const b of d.badges) {
+    const t = `${b[0]} ${b[1]}`;
+    const w = ctx.measureText(t).width + 36;
+    if (x + w > W - M) break;
+    ctx.fillStyle = 'rgba(255,255,255,0.17)'; rr(ctx, x, y - ch, w, ch, 27); ctx.fill();
+    ctx.fillStyle = WHITE; ctx.fillText(t, x + 18, y - ch / 2 + 9);
+    x += w + 10;
+  }
+}
+function drawSticker(ctx, W, H, d) {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 2;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `600 30px ${FM}`;
+  ctx.fillText(d.fin ? '21.1 KM · MEDIO MARATÓN' : 'RUMBO AL 21K · MEDIO MARATÓN', W / 2, 270);
+  ctx.fillStyle = '#FF6B4F';
+  ctx.fillRect(W / 2 - 60, 296, 120, 6);
+  ctx.fillStyle = '#FFFFFF';
+  const bs = fit(ctx, d.big, 900, FD, 300, 140, W - 120);
+  let y = 330 + bs * 0.74 + 20;
+  ctx.fillText(d.big, W / 2, y);
+  y += 96;
+  const line = d.stats.slice(0, 2).map((s) => s[1]).join('   ·   ');
+  fit(ctx, line, 800, FD, 70, 38, W - 120);
+  ctx.fillText(line, W / 2, y);
+  y += 86;
+  fit(ctx, d.name, 800, FD, 62, 34, W - 160);
+  ctx.fillText(d.name, W / 2, y);
+  y += 58;
+  ctx.font = `400 26px ${FM}`;
+  ctx.fillText(d.group ? `${d.group.toUpperCase()} · SAN JUAN, PR` : 'SAN JUAN, PR · 08·11·26', W / 2, y);
+  ctx.restore();
+}
+let drawTok = 0;
+async function drawCard() {
+  const tok = ++drawTok;
+  const r = getR(CARD.rid);
+  if (!r) return;
+  await ensureFonts();
+  let img = null;
+  if (CARD.tpl !== 'sticker' && CARD.photo && okId(CARD.photo)) {
+    try { img = await loadImg(blobUrl(CARD.photo)); } catch (e) { img = null; }
+  }
+  if (tok !== drawTok) return;
+  const [W, H] = CARD.tpl === 'story' ? [1080, 1920] : CARD.tpl === 'post' ? [1080, 1350] : [1080, 1080];
+  const cv = $('#cCanvas');
+  if (cv.width !== W) cv.width = W;
+  if (cv.height !== H) cv.height = H;
+  const ctx = cv.getContext('2d');
+  const d = cardData(r);
+  ctx.save();
+  try { if (CARD.tpl === 'sticker') drawSticker(ctx, W, H, d); else drawPhotoCard(ctx, W, H, img, d); }
+  finally { ctx.restore(); }
+}
+function renderCardUI() {
+  const r = getR(CARD.rid);
+  if (!r) return;
+  $$('#cTpl button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.tpl === CARD.tpl)));
+  const showPh = CARD.tpl !== 'sticker';
+  const box = $('#cPhotos');
+  box.hidden = !showPh;
+  box.innerHTML = r.photos.map((id) => `<button type="button" class="cph${CARD.photo === id ? ' on' : ''}" data-cph="${esc(id)}" aria-pressed="${CARD.photo === id}" aria-label="Usar esta foto"><img class="ph" src="${blobUrl(id)}" alt=""></button>`).join('') +
+    `<button type="button" class="cph none${!CARD.photo ? ' on' : ''}" data-cph="" aria-pressed="${!CARD.photo}">Sin foto</button>`;
+  $('#cStage').classList.toggle('checker', CARD.tpl === 'sticker');
+  $('#cHelp').textContent = CARD.tpl === 'sticker'
+    ? 'PNG transparente: pégalo encima de tu foto o video en Instagram o TikTok.'
+    : (r.photos.length ? 'Elige la foto de fondo. La imagen sale a 1080 px de ancho.' : 'Sube fotos en tus stats para usarlas de fondo.');
+}
+function openCard(rid, photoId) {
+  const r = getR(rid);
+  if (!r) return;
+  CARD.rid = rid;
+  CARD.photo = photoId && okId(photoId) ? photoId : (r.photos[0] || null);
+  renderCardUI();
+  if (!dlgCard.open) dlgCard.showModal();
+  S.drawP = drawCard();
+}
+async function saveCard() {
+  const btn = $('#cSave');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    await S.drawP;
+    const r = getR(CARD.rid);
+    if (!r) return;
+    const png = CARD.tpl === 'sticker';
+    let blob;
+    try { blob = await new Promise((res, rej) => $('#cCanvas').toBlob((b) => (b ? res(b) : rej(new Error('blob'))), png ? 'image/png' : 'image/jpeg', 0.92)); }
+    catch (e) { toast('No se pudo crear la imagen con esa foto. Prueba «Sin foto».'); return; }
+    const out = await saveFile(`wepa21k-${slug(r.name)}-${CARD.tpl}.${png ? 'png' : 'jpg'}`, blob);
+    if (out === 'unavailable') showImageFallback(blob);
+  } finally { btn.disabled = false; }
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('button');
+  if (!el) return;
+  const d = el.dataset;
+  if (d.tab) { goTab(d.tab); return; }
+  if (d.jump) { const s = document.getElementById(d.jump); if (s) s.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' }); return; }
+  if (d.close !== undefined) { const dl = el.closest('dialog'); if (dl) dl.close(); return; }
+  if (d.open) { openRunner(d.open); return; }
+  if (d.wepa) { toggleWepa(d.wepa); return; }
+  if (d.card) { openCard(d.card); return; }
+  if (d.edit) { const id = d.edit; dlgRunner.close(); openForm(id); return; }
+  if (d.del) { S.delAsk = d.del; renderRunner(); return; }
+  if (d.delNo !== undefined) { S.delAsk = null; renderRunner(); return; }
+  if (d.delYes) { deleteRunner(d.delYes); return; }
+  if (d.photo) { openPhoto(d.photo, d.rid); return; }
+  if (d.oasis !== undefined) { toggleOasis(+d.oasis); return; }
+  if (d.wsel !== undefined) { const cur = ls.get(WAVE_KEY) || ''; ls.set(WAVE_KEY, cur === d.wsel ? '' : d.wsel); renderWave(); return; }
+  if (d.tpl) { CARD.tpl = d.tpl; renderCardUI(); S.drawP = drawCard(); return; }
+  if (d.cph !== undefined) { CARD.photo = d.cph || null; renderCardUI(); S.drawP = drawCard(); return; }
+  if (d.rmph) { removeFormPhoto(d.rmph); return; }
+  if (d.feel) { if (S.form) { const v = +d.feel; S.form.feel = S.form.feel === v ? null : v; renderFeel(); } return; }
+  if (d.pick !== undefined) {
+    dlgPick.close();
+    openForm(d.pick || null);
+    if (S.form && S.assets) $('#fFile').click();
+    return;
+  }
+  if (d.act) {
+    const m = myRunners();
+    switch (d.act) {
+      case 'add': openForm(null); break;
+      case 'edit-mine': if (m.length === 1) openForm(m[0].id); break;
+      case 'add-goal': openForm(m.length === 1 ? m[0].id : null, { focus: '#fGoal' }); break;
+      case 'add-photo': if (!canWriteUI()) { toast(readOnlyMsg()); break; } renderPick(); dlgPick.showModal(); break;
+      case 'csv': exportCSV(); break;
+      case 'name': openName(); break;
+      case 'tip-ok': ls.set('wepa21k.tipok', '1'); renderGrupo(); break;
+      case 'oasis-reset': ls.setJSON(OASIS_KEY, []); renderOasis(); break;
+    }
+    return;
+  }
+  if (el.id === 'fAddPh') { $('#fFile').click(); return; }
+  if (el.id === 'pRunner') { const p = S.photo; dlgPhoto.close(); if (p) openRunner(p.rid); return; }
+  if (el.id === 'pCard') { const p = S.photo; dlgPhoto.close(); if (p) openCard(p.rid, p.id); return; }
+  if (el.id === 'cSave') { saveCard(); return; }
+});
+$$('dialog').forEach((dl) => dl.addEventListener('click', (e) => { if (e.target === dl) dl.close(); }));
+dlgForm.addEventListener('close', () => {
+  const F = S.form;
+  if (F && !F.saved && S.assets) for (const id of F.uploaded) S.assets.delete(id).catch(() => {});
+  S.form = null;
+});
+dlgRunner.addEventListener('close', () => { S.openRid = null; S.delAsk = null; });
+dlgPhoto.addEventListener('close', () => {
+  if (S.fallbackUrl) { URL.revokeObjectURL(S.fallbackUrl); S.fallbackUrl = null; }
+  $('#pRunner').hidden = false;
+  $('#pCard').hidden = false;
+});
+document.addEventListener('error', (e) => {
+  const t = e.target;
+  if (t && t.tagName === 'IMG' && t.classList.contains('ph')) t.classList.add('broken');
+}, true);
+['#fGoal', '#fTime', '#fHalf'].forEach((s) => $(s).addEventListener('input', updateHints));
+$('#fBib').addEventListener('input', (e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 6); if (v !== e.target.value) e.target.value = v; });
+$('#fFile').addEventListener('change', (e) => { const files = Array.from(e.target.files || []); e.target.value = ''; if (files.length) onFiles(files); });
+$('#runnerForm').addEventListener('submit', saveForm);
+$('#nameForm').addEventListener('submit', saveName);
+$('#checklist').addEventListener('change', (e) => {
+  const k = e.target.dataset && e.target.dataset.ck;
+  if (!k) return;
+  const s = new Set(ls.getJSON(CK_KEY, []));
+  if (e.target.checked) s.add(k); else s.delete(k);
+  ls.setJSON(CK_KEY, Array.from(s));
+  renderChecklist();
+});
+window.addEventListener('hashchange', route);
+
+/* ---------- start ---------- */
+route();
+tick();
+markTimeline();
+renderOasis();
+renderWave();
+renderChecklist();
+setInterval(tick, 1000);
+setInterval(markTimeline, 30000);
+boot();
+})();
+</script>
+
+</body></html>
