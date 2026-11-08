@@ -62,9 +62,21 @@ create trigger t_meta_touch before update on public.meta
 
 -- --- realtime --------------------------------------------------------------
 -- Necesario para que onSnapshot reciba los cambios de los demás.
-alter publication supabase_realtime add table public.runners;
-alter publication supabase_realtime add table public.reactions;
-alter publication supabase_realtime add table public.meta;
+-- Se hace en un DO con captura de error para que el script se pueda correr
+-- más de una vez: añadir una tabla que ya está en la publicación lanza
+-- duplicate_object, y el editor de Supabase aborta TODO el lote con el
+-- primer error. Así la segunda corrida no rompe nada.
+do $$
+declare t text;
+begin
+  for t in select unnest(array['runners','reactions','meta']) loop
+    begin
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    exception
+      when duplicate_object then null; -- ya estaba: seguimos
+    end;
+  end loop;
+end $$;
 
 -- Sin esto, un DELETE viaja solo con la llave primaria y, con RLS activo,
 -- el evento se puede perder: alguien borra un corredor o quita un ¡Wepa! y
@@ -72,9 +84,6 @@ alter publication supabase_realtime add table public.meta;
 alter table public.runners   replica identity full;
 alter table public.reactions replica identity full;
 alter table public.meta      replica identity full;
-
--- Si alguna de las tres líneas de arriba da error porque ya estaba añadida,
--- no pasa nada: seguí con el resto.
 
 -- --- RLS -------------------------------------------------------------------
 alter table public.runners   enable row level security;
