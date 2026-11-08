@@ -1312,12 +1312,16 @@ function meCardHTML(r, C, can) {
     (r.photos.length
       ? '<div class="rphotos">' + r.photos.map((id) => '<button type="button" class="ph-cell" data-photo="' + esc(id) + '" data-rid="' + esc(r.id) + '"><img class="ph" src="' + blobUrl(id) + '" alt="Mi foto" loading="lazy"></button>').join('') + '</div>'
       : '<p class="fine">Todav\u00eda no has subido fotos.</p>') +
-    (can
-      ? '<div class="foot-actions">' +
-        '<button type="button" class="btn primary" data-act="me-edit" data-rid="' + esc(r.id) + '">Editar mis stats</button>' +
-        '<button type="button" class="btn" data-act="me-photos" data-rid="' + esc(r.id) + '">+ Subir fotos</button>' +
-        '</div>'
-      : '') +
+    // «Crear tarjeta» sale siempre, igual que en la ficha del tab Grupo:
+    // para hacerla no hace falta permiso de escritura, solo los datos que
+    // ya están en pantalla.
+    '<div class="foot-actions">' +
+      (can
+        ? '<button type="button" class="btn primary" data-act="me-edit" data-rid="' + esc(r.id) + '">Editar mis stats</button>' +
+          '<button type="button" class="btn" data-act="me-photos" data-rid="' + esc(r.id) + '">+ Subir fotos</button>'
+        : '') +
+      '<button type="button" class="btn" data-card="' + esc(r.id) + '">Crear tarjeta</button>' +
+    '</div>' +
     '</article>';
 }
 function renderMe() {
